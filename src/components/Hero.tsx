@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import breadHeaderImg from "@/assets/BreadHeader.jpeg";
+import ibeLogo from "@/assets/IBENewLogo.png";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -71,14 +72,19 @@ export default function Hero() {
           <div
             className="hero-title"
             style={{
-              fontSize: "clamp(48px, 10vw, 96px)",
-              fontWeight: 800,
-              color: "#1a202c",
-              lineHeight: 1,
-              marginBottom: "16px",
+              marginBottom: "24px",
+              display: "flex",
+              justifyContent: "center",
             }}
           >
-            <span style={{ color: "#2b6cb0" }}>IBE</span>
+            <Image
+              src={ibeLogo}
+              alt="IBE"
+              width={280}
+              height={140}
+              style={{ objectFit: "contain" }}
+              priority
+            />
           </div>
           <p
             className="hero-subtitle"

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
+import ibeLogo from "@/assets/IBENewLogo.png";
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -80,26 +82,14 @@ export default function Navbar() {
               textDecoration: "none",
             }}
           >
-            <span
-              style={{
-                fontSize: "32px",
-                fontWeight: 800,
-                color: "#2b6cb0",
-                letterSpacing: "-1px",
-              }}
-            >
-              IBE
-            </span>
-            <span
-              style={{
-                fontSize: "14px",
-                color: "#5a6578",
-                display: "none",
-              }}
-              className="sm:inline-block"
-            >
-              Industrial Bakery Equipment
-            </span>
+            <Image
+              src={ibeLogo}
+              alt="IBE - Industrial Bakery Equipment"
+              height={48}
+              width={96}
+              style={{ objectFit: "contain" }}
+              priority
+            />
           </a>
 
           {/* Desktop Navigation */}

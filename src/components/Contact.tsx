@@ -119,28 +119,16 @@ export default function Contact() {
 
     setIsSubmitting(true);
 
-    const SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
-
-    if (!SCRIPT_URL) {
-      console.log("Form data (Google Script URL not configured):", formData);
-      setSubmitStatus("success");
-      setIsSubmitting(false);
-      setFormData({ name: "", email: "", company: "", phone: "", message: "", productInterest: "", products: "" });
-      clearCart();
-      setTurnstileToken("");
-      if (turnstileWidgetId.current && window.turnstile) {
-        window.turnstile.reset(turnstileWidgetId.current);
-      }
-      return;
-    }
-
     try {
-      await fetch(SCRIPT_URL, {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, timestamp: new Date().toISOString() }),
+        body: JSON.stringify({ ...formData, turnstileToken }),
       });
+
+      if (!res.ok) {
+        throw new Error("Submission failed");
+      }
 
       setSubmitStatus("success");
       setFormData({ name: "", email: "", company: "", phone: "", message: "", productInterest: "", products: "" });
