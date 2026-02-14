@@ -1,29 +1,44 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Product, defaultProducts } from "@/data/products";
+import { Product, defaultProducts, productCategories } from "@/data/products";
 import { Event, defaultEvents } from "@/data/events";
 import { supabase } from "@/lib/supabase/client";
+
+export interface Category {
+  id: string;
+  name: string;
+  sort_order: number;
+}
 
 interface DataContextType {
   products: Product[];
   events: Event[];
+  categories: Category[];
   loading: boolean;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
+const defaultCategories: Category[] = productCategories.map((c, i) => ({
+  id: c.id,
+  name: c.name,
+  sort_order: i,
+}));
+
 export function DataProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(defaultProducts);
   const [events, setEvents] = useState<Event[]>(defaultEvents);
+  const [categories, setCategories] = useState<Category[]>(defaultCategories);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [productsRes, eventsRes] = await Promise.all([
+        const [productsRes, eventsRes, categoriesRes] = await Promise.all([
           supabase.from("products").select("*").order("sort_order"),
           supabase.from("events").select("*").order("date"),
+          supabase.from("categories").select("*").order("sort_order"),
         ]);
 
         if (productsRes.data && productsRes.data.length > 0) {
@@ -33,7 +48,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
               name: p.name,
               description: p.description,
               image_url: p.image_url || "",
-              category: p.category as Product["category"],
+              category: p.category,
             }))
           );
         }
@@ -50,6 +65,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
             }))
           );
         }
+
+        if (categoriesRes.data && categoriesRes.data.length > 0) {
+          setCategories(
+            categoriesRes.data.map((c) => ({
+              id: c.id,
+              name: c.name,
+              sort_order: c.sort_order ?? 0,
+            }))
+          );
+        }
       } catch (err) {
         console.error("Failed to fetch from Supabase, using defaults", err);
       } finally {
@@ -61,7 +86,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <DataContext.Provider value={{ products, events, loading }}>
+    <DataContext.Provider value={{ products, events, categories, loading }}>
       {children}
     </DataContext.Provider>
   );

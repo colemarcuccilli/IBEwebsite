@@ -20,6 +20,13 @@ export interface EventRow {
   updated_at: string;
 }
 
+export interface CategoryRow {
+  id: string;
+  name: string;
+  sort_order: number;
+  created_at: string;
+}
+
 export interface ContactRow {
   id: string;
   name: string;

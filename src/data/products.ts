@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   description: string;
   image_url: string;
-  category: "bakery" | "blast-freeze" | "carts";
+  category: string;
 }
 
 export const defaultProducts: Product[] = [
