@@ -4,7 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer style={{ background: "linear-gradient(180deg, #1e3a5f, #1a365d)", borderTop: "3px solid #dd6b20" }}>
+    <footer style={{ background: "linear-gradient(180deg, #1C2B36, #162129)", borderTop: "3px solid #C05621" }}>
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "80px 24px 40px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "60px", marginBottom: "60px" }}>
           {/* Logo & Description */}
@@ -15,7 +15,8 @@ export default function Footer() {
             <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.8, marginBottom: "24px" }}>
               Industrial Bakery Equipment - Specializing in food service equipment, wire carts, and sheet metal products since 2008.
             </p>
-            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.5)" }}>Fort Wayne, IN</p>
+            <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.5)", marginBottom: "8px" }}>Fort Wayne, IN</p>
+            <a href="tel:260-710-0063" style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", textDecoration: "none" }}>260-710-0063</a>
           </div>
 
           {/* Quick Links */}

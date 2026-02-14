@@ -1,0 +1,33 @@
+export interface ProductRow {
+  id: string;
+  name: string;
+  description: string;
+  image_url: string;
+  category: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventRow {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  description: string;
+  link: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactRow {
+  id: string;
+  name: string;
+  email: string;
+  company: string;
+  phone: string;
+  message: string;
+  product_interest: string;
+  products: string;
+  created_at: string;
+}

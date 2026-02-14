@@ -104,7 +104,7 @@ export default function QuoteCart() {
             width: "60px",
             height: "60px",
             borderRadius: "50%",
-            backgroundColor: "#2b6cb0",
+            backgroundColor: "#5F8A9E",
             color: "#ffffff",
             border: "none",
             cursor: "pointer",
@@ -112,7 +112,7 @@ export default function QuoteCart() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 4px 20px rgba(43, 108, 176, 0.4)",
+            boxShadow: "0 4px 20px rgba(95, 138, 158, 0.4)",
             transition: "transform 0.2s ease",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
@@ -179,17 +179,17 @@ export default function QuoteCart() {
             <div
               style={{
                 padding: "24px",
-                borderBottom: "1px solid rgba(43, 108, 176, 0.1)",
+                borderBottom: "1px solid rgba(95, 138, 158, 0.1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
             >
               <div>
-                <h3 style={{ fontSize: "22px", fontWeight: 700, color: "#1a202c", margin: 0 }}>
+                <h3 style={{ fontSize: "22px", fontWeight: 700, color: "#1C2B36", margin: 0 }}>
                   Quote Cart
                 </h3>
-                <p style={{ fontSize: "14px", color: "#5a6578", margin: "4px 0 0" }}>
+                <p style={{ fontSize: "14px", color: "#5A6E78", margin: "4px 0 0" }}>
                   {totalItems} {totalItems === 1 ? "item" : "items"}
                 </p>
               </div>
@@ -203,7 +203,7 @@ export default function QuoteCart() {
                   background: "rgba(0,0,0,0.06)",
                   cursor: "pointer",
                   fontSize: "18px",
-                  color: "#5a6578",
+                  color: "#5A6E78",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -220,7 +220,7 @@ export default function QuoteCart() {
                   style={{
                     textAlign: "center",
                     padding: "60px 20px",
-                    color: "#5a6578",
+                    color: "#5A6E78",
                     fontSize: "16px",
                   }}
                 >
@@ -235,7 +235,7 @@ export default function QuoteCart() {
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: "16px 0",
-                      borderBottom: "1px solid rgba(43, 108, 176, 0.08)",
+                      borderBottom: "1px solid rgba(95, 138, 158, 0.08)",
                     }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -243,7 +243,7 @@ export default function QuoteCart() {
                         style={{
                           fontSize: "15px",
                           fontWeight: 600,
-                          color: "#1a202c",
+                          color: "#1C2B36",
                           margin: 0,
                           whiteSpace: "nowrap",
                           overflow: "hidden",
@@ -271,7 +271,7 @@ export default function QuoteCart() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        border: "1px solid rgba(43, 108, 176, 0.15)",
+                        border: "1px solid rgba(95, 138, 158, 0.15)",
                         borderRadius: "6px",
                         overflow: "hidden",
                         marginLeft: "12px",
@@ -283,10 +283,10 @@ export default function QuoteCart() {
                           width: "32px",
                           height: "32px",
                           border: "none",
-                          background: "#F3F1ED",
+                          background: "#E8EDF0",
                           cursor: "pointer",
                           fontSize: "16px",
-                          color: "#1a202c",
+                          color: "#1C2B36",
                         }}
                       >
                         −
@@ -297,7 +297,7 @@ export default function QuoteCart() {
                           textAlign: "center",
                           fontSize: "14px",
                           fontWeight: 600,
-                          color: "#1a202c",
+                          color: "#1C2B36",
                         }}
                       >
                         {item.quantity}
@@ -308,10 +308,10 @@ export default function QuoteCart() {
                           width: "32px",
                           height: "32px",
                           border: "none",
-                          background: "#F3F1ED",
+                          background: "#E8EDF0",
                           cursor: "pointer",
                           fontSize: "16px",
-                          color: "#1a202c",
+                          color: "#1C2B36",
                         }}
                       >
                         +
@@ -327,13 +327,13 @@ export default function QuoteCart() {
               <div
                 style={{
                   padding: "24px",
-                  borderTop: "1px solid rgba(43, 108, 176, 0.1)",
+                  borderTop: "1px solid rgba(95, 138, 158, 0.1)",
                 }}
               >
                 <p
                   style={{
                     fontSize: "14px",
-                    color: "#5a6578",
+                    color: "#5A6E78",
                     marginBottom: "16px",
                     lineHeight: 1.6,
                   }}
@@ -369,7 +369,7 @@ export default function QuoteCart() {
                     padding: "10px",
                     background: "none",
                     border: "none",
-                    color: "#5a6578",
+                    color: "#5A6E78",
                     fontSize: "14px",
                     cursor: "pointer",
                     textDecoration: "underline",

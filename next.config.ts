@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Vercel handles builds natively — no static export needed */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "vaimupbyosltsvhyptah.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

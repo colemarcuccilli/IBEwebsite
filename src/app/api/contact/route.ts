@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -32,6 +33,21 @@ export async function POST(request: NextRequest) {
       { error: "Turnstile verification failed" },
       { status: 403 }
     );
+  }
+
+  // Save to Supabase contacts table
+  try {
+    await supabaseAdmin.from("contacts").insert({
+      name: formData.name || "",
+      email: formData.email || "",
+      company: formData.company || "",
+      phone: formData.phone || "",
+      message: formData.message || "",
+      product_interest: formData.productInterest || "",
+      products: formData.products || "",
+    });
+  } catch (err) {
+    console.error("Failed to save contact to Supabase:", err);
   }
 
   // Forward to Google Sheets

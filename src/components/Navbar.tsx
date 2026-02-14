@@ -17,8 +17,13 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const ctx = gsap.context(() => {
       gsap.fromTo(".nav-item",
         { y: -15 },
@@ -33,12 +38,14 @@ export default function Navbar() {
 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+      setIsMobileMenuOpen(false);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => {
       ctx.revert();
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -52,8 +59,8 @@ export default function Navbar() {
         right: 0,
         zIndex: 50,
         transition: "all 0.3s ease",
-        backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
-        backdropFilter: isScrolled ? "blur(12px)" : "none",
+        backgroundColor: isMobileMenuOpen ? "rgba(28, 43, 54, 0.98)" : isScrolled ? "rgba(242,245,247,0.95)" : "transparent",
+        backdropFilter: isScrolled || isMobileMenuOpen ? "blur(12px)" : "none",
         boxShadow: isScrolled ? "0 1px 12px rgba(0,0,0,0.08)" : "none",
       }}
     >
@@ -90,97 +97,102 @@ export default function Navbar() {
               style={{ objectFit: "contain" }}
               priority
             />
+            <span style={{ fontSize: "12px", fontStyle: "italic", color: "#5A6E78", letterSpacing: "1px", whiteSpace: "nowrap" }}>
+              Industrial Bakery Equipment
+            </span>
           </a>
 
           {/* Desktop Navigation */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "40px",
-            }}
-            className="hidden md:flex"
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="nav-item"
-                style={{
-                  color: "#4a5568",
-                  textDecoration: "none",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  textTransform: "uppercase",
-                  letterSpacing: "1px",
-                  transition: "color 0.3s ease",
-                  position: "relative",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#c05621")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#4a5568")}
-              >
-                {link.name}
-              </a>
-            ))}
-            <a
-              href="#contact"
-              className="nav-item"
+          {!isMobile && (
+            <div
               style={{
-                backgroundColor: "#2b6cb0",
-                color: "#ffffff",
-                padding: "12px 24px",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontSize: "14px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#dd6b20";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#2b6cb0";
-                e.currentTarget.style.transform = "translateY(0)";
+                display: "flex",
+                alignItems: "center",
+                gap: "40px",
               }}
             >
-              Get Quote
-            </a>
-          </div>
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="nav-item"
+                  style={{
+                    color: "#4A5E68",
+                    textDecoration: "none",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    transition: "color 0.3s ease",
+                    position: "relative",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "#4A5E68")}
+                >
+                  {link.name}
+                </a>
+              ))}
+              <a
+                href="#contact"
+                className="nav-item"
+                style={{
+                  backgroundColor: "#5F8A9E",
+                  color: "#ffffff",
+                  padding: "12px 24px",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#C05621";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#5F8A9E";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                Get Quote
+              </a>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1a202c",
-              padding: "8px",
-              cursor: "pointer",
-            }}
-          >
-            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          {isMobile && (
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+              style={{
+                background: "none",
+                border: "none",
+                color: isScrolled ? "#1C2B36" : "#ffffff",
+                padding: "8px",
+                cursor: "pointer",
+                transition: "color 0.3s ease",
+              }}
+            >
+              <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
+        {isMobile && isMobileMenuOpen && (
           <div
-            className="md:hidden"
             style={{
-              backgroundColor: "rgba(255, 255, 255, 0.98)",
-              borderTop: "1px solid rgba(26, 54, 93, 0.12)",
-              padding: "20px 0",
+              backgroundColor: "rgba(28, 43, 54, 0.98)",
+              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 0",
             }}
           >
             {navLinks.map((link) => (
@@ -191,16 +203,38 @@ export default function Navbar() {
                 style={{
                   display: "block",
                   padding: "16px 24px",
-                  color: "#1a202c",
+                  color: "rgba(255, 255, 255, 0.85)",
                   textDecoration: "none",
                   fontSize: "16px",
                   fontWeight: 500,
-                  transition: "background 0.3s ease",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
                 }}
               >
                 {link.name}
               </a>
             ))}
+            <div style={{ padding: "8px 24px 8px" }}>
+              <a
+                href="#contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  display: "block",
+                  padding: "16px 24px",
+                  backgroundColor: "#C05621",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "2px",
+                  borderRadius: "6px",
+                  textAlign: "center",
+                }}
+              >
+                Get Quote
+              </a>
+            </div>
           </div>
         )}
       </div>

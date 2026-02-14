@@ -162,7 +162,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
         <div
           style={{
             width: "100%",
-            height: "350px",
+            height: "400px",
             background: "#F3F1ED",
             position: "relative",
             borderRadius: "16px 16px 0 0",
@@ -172,12 +172,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
             justifyContent: "center",
           }}
         >
-          {product.image ? (
+          {product.image_url ? (
             <Image
-              src={product.image}
+              src={product.image_url}
               alt={product.name}
               fill
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "contain", padding: "16px" }}
               sizes="700px"
             />
           ) : (
@@ -217,7 +217,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
           >
             {product.name}
           </h2>
-          <p
+          <div
             style={{
               fontSize: "16px",
               color: "#5a6578",
@@ -225,8 +225,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               marginBottom: "32px",
             }}
           >
-            {product.description}
-          </p>
+            {product.description.split("\n\n").map((paragraph, i) => (
+              <p key={i} style={{ marginBottom: i < product.description.split("\n\n").length - 1 ? "12px" : 0 }}>
+                {paragraph}
+              </p>
+            ))}
+          </div>
 
           {/* Quantity selector + Add to Quote */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>

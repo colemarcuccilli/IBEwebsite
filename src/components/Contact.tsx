@@ -150,9 +150,9 @@ export default function Contact() {
     width: "100%",
     padding: "16px 20px",
     background: "#FFFFFF",
-    border: "1px solid rgba(26, 54, 93, 0.15)",
+    border: "1px solid rgba(28, 43, 54, 0.15)",
     borderRadius: "8px",
-    color: "#1a202c",
+    color: "#1C2B36",
     fontSize: "16px",
     outline: "none",
     transition: "all 0.3s ease",
@@ -163,7 +163,7 @@ export default function Contact() {
     marginBottom: "8px",
     fontSize: "14px",
     fontWeight: 500,
-    color: "#5a6578",
+    color: "#5A6E78",
     textTransform: "uppercase",
     letterSpacing: "0.5px",
   };
@@ -174,18 +174,18 @@ export default function Contact() {
       id="contact"
       style={{
         padding: "120px 0",
-        background: "linear-gradient(180deg, #FAFAF8 0%, #e8eef6 100%)",
+        background: "linear-gradient(180deg, #F2F5F7 0%, #D4E1E8 100%)",
         position: "relative",
       }}
     >
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 24px" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <h2 className="contact-title" style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, color: "#1a202c", marginBottom: "20px" }}>
-            Contact <span style={{ color: "#2b6cb0" }}>Us</span>
+          <h2 className="contact-title" style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, color: "#1C2B36", marginBottom: "20px" }}>
+            Contact <span style={{ color: "#5F8A9E" }}>Us</span>
           </h2>
-          <div style={{ width: "60px", height: "4px", background: "#dd6b20", margin: "0 auto 20px", borderRadius: "2px" }} />
-          <p style={{ fontSize: "18px", color: "#5a6578", maxWidth: "600px", margin: "0 auto" }}>
+          <div style={{ width: "60px", height: "4px", background: "#C05621", margin: "0 auto 20px", borderRadius: "2px" }} />
+          <p style={{ fontSize: "18px", color: "#5A6E78", maxWidth: "600px", margin: "0 auto" }}>
             Ready to discuss your equipment needs? Get in touch with our team.
           </p>
         </div>
@@ -212,7 +212,7 @@ export default function Contact() {
                   <p style={{ fontSize: "14px", fontWeight: 600, color: "#c05621", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                     Quoted Products
                   </p>
-                  <p style={{ fontSize: "15px", color: "#1a202c", margin: 0 }}>
+                  <p style={{ fontSize: "15px", color: "#1C2B36", margin: 0 }}>
                     {formatCartForSubmission()}
                   </p>
                 </div>
@@ -234,32 +234,32 @@ export default function Contact() {
                 </button>
               </div>
             )}
-            <form onSubmit={handleSubmit} className="contact-form" style={{ background: "#F3F1ED", padding: "40px", borderRadius: "16px", border: "1px solid rgba(26, 54, 93, 0.08)" }}>
+            <form onSubmit={handleSubmit} className="contact-form" style={{ background: "#E8EDF0", padding: "40px", borderRadius: "16px", border: "1px solid rgba(28, 43, 54, 0.08)" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                 <div>
                   <label style={labelStyle}>Name *</label>
-                  <input type="text" name="name" required value={formData.name} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")} />
+                  <input type="text" name="name" required value={formData.name} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")} />
                 </div>
                 <div>
                   <label style={labelStyle}>Email *</label>
-                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")} />
+                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")} />
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                 <div>
                   <label style={labelStyle}>Company</label>
-                  <input type="text" name="company" value={formData.company} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")} />
+                  <input type="text" name="company" value={formData.company} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")} />
                 </div>
                 <div>
                   <label style={labelStyle}>Phone</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")} />
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")} />
                 </div>
               </div>
 
               <div style={{ marginBottom: "24px" }}>
                 <label style={labelStyle}>Additional Product Interest</label>
-                <select name="productInterest" value={formData.productInterest} onChange={handleChange} style={{ ...inputStyle, cursor: "pointer" }} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")}>
+                <select name="productInterest" value={formData.productInterest} onChange={handleChange} style={{ ...inputStyle, cursor: "pointer" }} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")}>
                   <option value="" style={{ background: "#FFFFFF" }}>Select a category</option>
                   <option value="bakery" style={{ background: "#FFFFFF" }}>Bakery Products</option>
                   <option value="blast-freeze" style={{ background: "#FFFFFF" }}>Blast Freeze Racks</option>
@@ -271,7 +271,7 @@ export default function Contact() {
 
               <div style={{ marginBottom: "32px" }}>
                 <label style={labelStyle}>Message *</label>
-                <textarea name="message" required rows={5} value={formData.message} onChange={handleChange} style={{ ...inputStyle, resize: "none" }} onFocus={(e) => (e.target.style.borderColor = "#2b6cb0")} onBlur={(e) => (e.target.style.borderColor = "rgba(26, 54, 93, 0.15)")} />
+                <textarea name="message" required rows={5} value={formData.message} onChange={handleChange} style={{ ...inputStyle, resize: "none" }} onFocus={(e) => (e.target.style.borderColor = "#5F8A9E")} onBlur={(e) => (e.target.style.borderColor = "rgba(28, 43, 54, 0.15)")} />
               </div>
 
               {/* Cloudflare Turnstile */}
@@ -283,8 +283,8 @@ export default function Contact() {
                 style={{
                   width: "100%",
                   padding: "18px 40px",
-                  background: (isSubmitting || !turnstileToken) ? "#a0aec0" : "linear-gradient(135deg, #dd6b20, #c05621)",
-                  backgroundColor: (isSubmitting || !turnstileToken) ? "#a0aec0" : "#dd6b20",
+                  background: (isSubmitting || !turnstileToken) ? "#a0aec0" : "linear-gradient(135deg, #C05621, #c05621)",
+                  backgroundColor: (isSubmitting || !turnstileToken) ? "#a0aec0" : "#C05621",
                   color: "#ffffff",
                   border: "none",
                   borderRadius: "8px",
@@ -294,10 +294,10 @@ export default function Contact() {
                   letterSpacing: "2px",
                   cursor: (isSubmitting || !turnstileToken) ? "not-allowed" : "pointer",
                   transition: "all 0.3s ease",
-                  boxShadow: "0 4px 20px rgba(221, 107, 32, 0.3)",
+                  boxShadow: "0 4px 20px rgba(192, 86, 33, 0.3)",
                 }}
-                onMouseEnter={(e) => { if (!isSubmitting) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(221, 107, 32, 0.4)"; }}}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(221, 107, 32, 0.3)"; }}
+                onMouseEnter={(e) => { if (!isSubmitting) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(192, 86, 33, 0.4)"; }}}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(192, 86, 33, 0.3)"; }}
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
@@ -317,33 +317,23 @@ export default function Contact() {
 
           {/* Contact Info */}
           <div style={{ gridColumn: "span 1" }} className="lg:col-span-2 contact-info">
-            <div style={{ background: "#F3F1ED", padding: "40px", borderRadius: "16px", border: "1px solid rgba(26, 54, 93, 0.08)", marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "24px", fontWeight: 600, color: "#1a202c", marginBottom: "32px" }}>Get In Touch</h3>
+            <div style={{ background: "#1C2B36", padding: "40px", borderRadius: "16px" }}>
+              <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "2px", fontWeight: 600, marginBottom: "24px" }}>
+                Contact
+              </p>
 
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", marginBottom: "28px" }}>
-                <div style={{ width: "50px", height: "50px", background: "rgba(26, 54, 93, 0.08)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="24" height="24" fill="none" stroke="#1a365d" viewBox="0 0 24 24" strokeWidth="1.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <p style={{ fontSize: "14px", color: "#5a6578", marginBottom: "4px" }}>Location</p>
-                  <p style={{ fontSize: "18px", color: "#1a202c", fontWeight: 500 }}>Fort Wayne, IN</p>
-                </div>
-              </div>
-            </div>
+              <a href="tel:260-710-0063" style={{ display: "block", fontSize: "28px", color: "#ffffff", fontWeight: 700, textDecoration: "none", marginBottom: "8px", lineHeight: 1.3 }}>
+                260-710-0063
+              </a>
+              <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.5)", marginBottom: "40px" }}>
+                Fort Wayne, IN
+              </p>
 
-            <div style={{ background: "rgba(26, 54, 93, 0.05)", padding: "32px", borderRadius: "16px", border: "1px solid rgba(26, 54, 93, 0.08)" }}>
-              <h4 style={{ fontSize: "20px", fontWeight: 600, color: "#2b6cb0", marginBottom: "20px" }}>Why Choose IBE?</h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {["In business since 2008", "Quality craftsmanship", "Custom solutions available", "Industry expertise"].map((item) => (
-                  <li key={item} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px", color: "#1a202c", fontSize: "15px" }}>
-                    <span style={{ width: "8px", height: "8px", background: "#c05621", borderRadius: "50%" }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <div style={{ width: "40px", height: "3px", background: "#C05621", marginBottom: "24px", borderRadius: "2px" }} />
+
+              <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }}>
+                Steel &amp; stainless steel wire and sheet metal equipment. Custom carts, racks, and solutions built to spec. In business since 2008.
+              </p>
             </div>
           </div>
         </div>

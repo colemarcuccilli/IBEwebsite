@@ -3,119 +3,65 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product, defaultProducts } from "@/data/products";
 import { Event, defaultEvents } from "@/data/events";
+import { supabase } from "@/lib/supabase/client";
 
 interface DataContextType {
   products: Product[];
   events: Event[];
-  setProducts: (products: Product[]) => void;
-  setEvents: (events: Event[]) => void;
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, product: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  addEvent: (event: Event) => void;
-  updateEvent: (id: string, event: Partial<Event>) => void;
-  deleteEvent: (id: string) => void;
+  loading: boolean;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const PRODUCTS_KEY = "ibe_products";
-const EVENTS_KEY = "ibe_events";
-
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [products, setProductsState] = useState<Product[]>(defaultProducts);
-  const [events, setEventsState] = useState<Event[]>(defaultEvents);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [products, setProducts] = useState<Product[]>(defaultProducts);
+  const [events, setEvents] = useState<Event[]>(defaultEvents);
+  const [loading, setLoading] = useState(true);
 
-  // Load from localStorage on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedProducts = localStorage.getItem(PRODUCTS_KEY);
-      const storedEvents = localStorage.getItem(EVENTS_KEY);
+    async function fetchData() {
+      try {
+        const [productsRes, eventsRes] = await Promise.all([
+          supabase.from("products").select("*").order("sort_order"),
+          supabase.from("events").select("*").order("date"),
+        ]);
 
-      if (storedProducts) {
-        try {
-          setProductsState(JSON.parse(storedProducts));
-        } catch (e) {
-          console.error("Failed to parse stored products", e);
+        if (productsRes.data && productsRes.data.length > 0) {
+          setProducts(
+            productsRes.data.map((p) => ({
+              id: p.id,
+              name: p.name,
+              description: p.description,
+              image_url: p.image_url || "",
+              category: p.category as Product["category"],
+            }))
+          );
         }
-      }
 
-      if (storedEvents) {
-        try {
-          setEventsState(JSON.parse(storedEvents));
-        } catch (e) {
-          console.error("Failed to parse stored events", e);
+        if (eventsRes.data && eventsRes.data.length > 0) {
+          setEvents(
+            eventsRes.data.map((e) => ({
+              id: e.id,
+              title: e.title,
+              date: e.date,
+              location: e.location,
+              description: e.description,
+              link: e.link || "",
+            }))
+          );
         }
+      } catch (err) {
+        console.error("Failed to fetch from Supabase, using defaults", err);
+      } finally {
+        setLoading(false);
       }
-      setIsLoaded(true);
     }
+
+    fetchData();
   }, []);
 
-  // Save to localStorage when data changes
-  useEffect(() => {
-    if (isLoaded && typeof window !== "undefined") {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-    }
-  }, [products, isLoaded]);
-
-  useEffect(() => {
-    if (isLoaded && typeof window !== "undefined") {
-      localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
-    }
-  }, [events, isLoaded]);
-
-  const setProducts = (newProducts: Product[]) => {
-    setProductsState(newProducts);
-  };
-
-  const setEvents = (newEvents: Event[]) => {
-    setEventsState(newEvents);
-  };
-
-  const addProduct = (product: Product) => {
-    setProductsState((prev) => [...prev, product]);
-  };
-
-  const updateProduct = (id: string, updates: Partial<Product>) => {
-    setProductsState((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
-    );
-  };
-
-  const deleteProduct = (id: string) => {
-    setProductsState((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  const addEvent = (event: Event) => {
-    setEventsState((prev) => [...prev, event]);
-  };
-
-  const updateEvent = (id: string, updates: Partial<Event>) => {
-    setEventsState((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
-    );
-  };
-
-  const deleteEvent = (id: string) => {
-    setEventsState((prev) => prev.filter((e) => e.id !== id));
-  };
-
   return (
-    <DataContext.Provider
-      value={{
-        products,
-        events,
-        setProducts,
-        setEvents,
-        addProduct,
-        updateProduct,
-        deleteProduct,
-        addEvent,
-        updateEvent,
-        deleteEvent,
-      }}
-    >
+    <DataContext.Provider value={{ products, events, loading }}>
       {children}
     </DataContext.Provider>
   );

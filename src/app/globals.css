@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ibe-primary: #1a365d;
-  --color-ibe-secondary: #c05621;
-  --color-ibe-accent: #c05621;
-  --color-ibe-dark: #1a202c;
-  --color-ibe-light: #FAFAF8;
-  --color-ibe-steel: #4a5568;
-  --color-ibe-silver: #5a6578;
+  --color-ibe-primary: #5F8A9E;
+  --color-ibe-primary-dark: #3D6478;
+  --color-ibe-primary-light: #D4E1E8;
+  --color-ibe-accent: #C05621;
+  --color-ibe-dark: #1C2B36;
+  --color-ibe-light: #F2F5F7;
+  --color-ibe-steel: #4A5E68;
+  --color-ibe-silver: #5A6E78;
 }
 
 * {
@@ -21,9 +22,9 @@ html {
 }
 
 body {
-  background: #FAFAF8;
-  color: #1a202c;
-  font-family: system-ui, -apple-system, sans-serif;
+  background: #F2F5F7;
+  color: #1C2B36;
+  font-family: var(--font-barlow), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   line-height: 1.6;
 }
@@ -33,24 +34,23 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F3F1ED;
+  background: #E8EDF0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #a0aec0;
+  background: #5F8A9E;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1a365d;
+  background: #3D6478;
 }
 
 ::selection {
-  background: #1a365d;
+  background: #3D6478;
   color: #f7fafc;
 }
 
-/* Ensure sections have proper spacing */
 section {
   width: 100%;
 }

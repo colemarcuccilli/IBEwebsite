@@ -32,7 +32,7 @@ export default function Hero() {
         alignItems: "center",
         position: "relative",
         overflow: "hidden",
-        background: "linear-gradient(135deg, #FAFAF8 0%, #F3F1ED 50%, #FAFAF8 100%)",
+        background: "linear-gradient(135deg, #1C2B36 0%, #2A3F4D 50%, #1C2B36 100%)",
       }}
     >
       {/* Background image overlay */}
@@ -40,7 +40,7 @@ export default function Hero() {
         style={{
           position: "absolute",
           inset: 0,
-          opacity: 0.12,
+          opacity: 0.08,
           pointerEvents: "none",
           zIndex: 1,
         }}
@@ -90,9 +90,10 @@ export default function Hero() {
             className="hero-subtitle"
             style={{
               fontSize: "clamp(20px, 3vw, 32px)",
-              color: "#5a6578",
+              color: "rgba(255,255,255,0.85)",
               marginBottom: "32px",
               fontWeight: 300,
+              fontStyle: "italic",
               letterSpacing: "2px",
             }}
           >
@@ -102,7 +103,7 @@ export default function Hero() {
             className="hero-mission"
             style={{
               fontSize: "18px",
-              color: "#1a202c",
+              color: "rgba(255,255,255,0.7)",
               marginBottom: "48px",
               lineHeight: 1.8,
               maxWidth: "600px",
@@ -117,7 +118,7 @@ export default function Hero() {
               style={{
                 display: "inline-block",
                 padding: "18px 40px",
-                backgroundColor: "#2b6cb0",
+                backgroundColor: "#C05621",
                 color: "#ffffff",
                 textDecoration: "none",
                 fontWeight: 600,
@@ -126,15 +127,15 @@ export default function Hero() {
                 letterSpacing: "2px",
                 fontSize: "14px",
                 transition: "all 0.3s ease",
-                boxShadow: "0 4px 20px rgba(43, 108, 176, 0.3)",
+                boxShadow: "0 4px 20px rgba(192,86,33,0.3)",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.boxShadow = "0 8px 30px rgba(43, 108, 176, 0.4)";
+                e.currentTarget.style.boxShadow = "0 8px 30px rgba(192,86,33,0.4)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(43, 108, 176, 0.3)";
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(192,86,33,0.3)";
               }}
             >
               View Products
@@ -145,23 +146,25 @@ export default function Hero() {
                 display: "inline-block",
                 padding: "18px 40px",
                 backgroundColor: "transparent",
-                color: "#2b6cb0",
+                color: "#ffffff",
                 textDecoration: "none",
                 fontWeight: 600,
                 borderRadius: "4px",
                 textTransform: "uppercase",
                 letterSpacing: "2px",
                 fontSize: "14px",
-                border: "2px solid #2b6cb0",
+                border: "2px solid #ffffff",
                 transition: "all 0.3s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#1a365d";
+                e.currentTarget.style.backgroundColor = "#C05621";
+                e.currentTarget.style.borderColor = "#C05621";
                 e.currentTarget.style.color = "#ffffff";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.color = "#1a365d";
+                e.currentTarget.style.borderColor = "#ffffff";
+                e.currentTarget.style.color = "#ffffff";
               }}
             >
               Contact Us
@@ -179,7 +182,7 @@ export default function Hero() {
           transform: "translateX(-50%)",
         }}
       >
-        <svg width="24" height="24" fill="none" stroke="#1a365d" viewBox="0 0 24 24">
+        <svg width="24" height="24" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </div>

@@ -1,31 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useData } from "@/context/DataContext";
-import { Product, productCategories } from "@/data/products";
-import { Event } from "@/data/events";
 import ibeLogo from "@/assets/IBENewLogo.png";
-
-const ADMIN_PASSWORD = "IBE2008admin";
-
-// Available images in public/images — add new filenames here after uploading
-const availableImages = [
-  { path: "/images/Breadrack.jpg", label: "Bread Rack" },
-  { path: "/images/BreadTransport RackwithBuns.jpg", label: "Bread Transport Rack with Buns" },
-  { path: "/images/Carryout Cropped.jpg", label: "Carryout Cart" },
-  { path: "/images/cropped tub.jpg", label: "Dough Trough" },
-  { path: "/images/Donut Basket.jpg", label: "Donut Basket" },
-  { path: "/images/Glazing Rack.jpg", label: "Glazing Rack" },
-  { path: "/images/LS3 Mail Cart.jpg", label: "LS3 Mail Cart" },
-  { path: "/images/LS4 Mail Cart.jpg", label: "LS4 Mail Cart" },
-  { path: "/images/Pan Rack Cropped new.jpg", label: "Pan Rack" },
-  { path: "/images/Pie Rack.JPG", label: "Pie Rack" },
-  { path: "/images/Receiving Cart - Closed.jpg", label: "Receiving Cart (Closed)" },
-  { path: "/images/Receiving Cart - Fully open.jpg", label: "Receiving Cart (Open)" },
-  { path: "/images/Receiving Cart - Half Open.jpg", label: "Receiving Cart (Half Open)" },
-  { path: "/images/Seafood Rack.jpg", label: "Seafood Rack" },
-];
+import { productCategories } from "@/data/products";
+import type { ProductRow, EventRow, ContactRow } from "@/lib/supabase/types";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -68,93 +47,219 @@ const btnSecondary: React.CSSProperties = {
   cursor: "pointer",
 };
 
+async function apiFetch(url: string, opts?: RequestInit) {
+  const res = await fetch(url, { ...opts, credentials: "include" });
+  if (res.status === 401) throw new Error("UNAUTHORIZED");
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || res.statusText);
+  }
+  return res.json();
+}
+
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"products" | "events">("products");
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [loginError, setLoginError] = useState("");
+  const [activeTab, setActiveTab] = useState<"products" | "events" | "customers">("products");
+
+  // Products state
+  const [products, setProducts] = useState<ProductRow[]>([]);
+  const [editingProduct, setEditingProduct] = useState<ProductRow | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [productForm, setProductForm] = useState({ name: "", description: "", image_url: "", category: "bakery", sort_order: 0 });
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  // Events state
+  const [events, setEvents] = useState<EventRow[]>([]);
+  const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const [eventForm, setEventForm] = useState({ title: "", date: "", location: "", description: "", link: "" });
+
+  // Customers state
+  const [contacts, setContacts] = useState<ContactRow[]>([]);
+
+  // Shared state
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
-  const { products, events, addProduct, updateProduct, deleteProduct, addEvent, updateEvent, deleteEvent } = useData();
-
-  useEffect(() => {
-    const session = sessionStorage.getItem("ibe_admin_auth");
-    if (session === "true") setIsAuthenticated(true);
+  const loadProducts = useCallback(async () => {
+    try {
+      const data = await apiFetch("/api/admin/products");
+      setProducts(data);
+    } catch (err) {
+      if (err instanceof Error && err.message === "UNAUTHORIZED") {
+        setIsAuthenticated(false);
+        return;
+      }
+      console.error("Failed to load products", err);
+    }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const loadEvents = useCallback(async () => {
+    try {
+      const data = await apiFetch("/api/admin/events");
+      setEvents(data);
+    } catch (err) {
+      if (err instanceof Error && err.message === "UNAUTHORIZED") {
+        setIsAuthenticated(false);
+        return;
+      }
+      console.error("Failed to load events", err);
+    }
+  }, []);
+
+  const loadContacts = useCallback(async () => {
+    try {
+      const data = await apiFetch("/api/admin/contacts");
+      setContacts(data);
+    } catch (err) {
+      if (err instanceof Error && err.message === "UNAUTHORIZED") {
+        setIsAuthenticated(false);
+        return;
+      }
+      console.error("Failed to load contacts", err);
+    }
+  }, []);
+
+  // Check auth on mount by trying to load products
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadProducts();
+      loadEvents();
+      loadContacts();
+    }
+  }, [isAuthenticated, loadProducts, loadEvents, loadContacts]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    setLoginError("");
+    try {
+      await apiFetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
       setIsAuthenticated(true);
-      sessionStorage.setItem("ibe_admin_auth", "true");
-      setError("");
-    } else {
-      setError("Incorrect password");
+      setPassword("");
+    } catch {
+      setLoginError("Incorrect password");
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
     setIsAuthenticated(false);
-    sessionStorage.removeItem("ibe_admin_auth");
   };
 
-  // Product form state
-  const [productForm, setProductForm] = useState<Omit<Product, "id">>({
-    name: "",
-    description: "",
-    image: "",
-    category: "bakery",
-  });
-
-  // Event form state
-  const [eventForm, setEventForm] = useState<Omit<Event, "id">>({
-    title: "",
-    date: "",
-    location: "",
-    description: "",
-    link: "",
-  });
-
-  const handleProductSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingProduct) {
-      updateProduct(editingProduct.id, productForm);
-      setEditingProduct(null);
-    } else {
-      addProduct({ ...productForm, id: `product-${Date.now()}` });
-      setShowAddProduct(false);
+  // Image upload
+  const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
+    setError("");
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const data = await apiFetch("/api/admin/upload", { method: "POST", body: form });
+      setProductForm((prev) => ({ ...prev, image_url: data.url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploadingImage(false);
     }
-    setProductForm({ name: "", description: "", image: "", category: "bakery" });
   };
 
-  const handleEventSubmit = (e: React.FormEvent) => {
+  // Product CRUD
+  const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingEvent) {
-      updateEvent(editingEvent.id, eventForm);
-      setEditingEvent(null);
-    } else {
-      addEvent({ ...eventForm, id: `event-${Date.now()}` });
-      setShowAddEvent(false);
+    setSaving(true);
+    setError("");
+    try {
+      if (editingProduct) {
+        await apiFetch(`/api/admin/products/${editingProduct.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(productForm),
+        });
+      } else {
+        const id = productForm.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        await apiFetch("/api/admin/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...productForm, id }),
+        });
+      }
+      cancelEdit();
+      await loadProducts();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
     }
-    setEventForm({ title: "", date: "", location: "", description: "", link: "" });
   };
 
-  const startEditProduct = (product: Product) => {
+  const deleteProduct = async (id: string) => {
+    try {
+      await apiFetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      setDeleteConfirm(null);
+      await loadProducts();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Delete failed");
+    }
+  };
+
+  const startEditProduct = (product: ProductRow) => {
     setEditingProduct(product);
     setProductForm({
       name: product.name,
       description: product.description,
-      image: product.image,
+      image_url: product.image_url || "",
       category: product.category,
+      sort_order: product.sort_order || 0,
     });
     setShowAddProduct(false);
   };
 
-  const startEditEvent = (event: Event) => {
+  // Event CRUD
+  const handleEventSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      if (editingEvent) {
+        await apiFetch(`/api/admin/events/${editingEvent.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventForm),
+        });
+      } else {
+        const id = eventForm.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        await apiFetch("/api/admin/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...eventForm, id }),
+        });
+      }
+      cancelEdit();
+      await loadEvents();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteEvent = async (id: string) => {
+    try {
+      await apiFetch(`/api/admin/events/${id}`, { method: "DELETE" });
+      setDeleteConfirm(null);
+      await loadEvents();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Delete failed");
+    }
+  };
+
+  const startEditEvent = (event: EventRow) => {
     setEditingEvent(event);
     setEventForm({
       title: event.title,
@@ -171,8 +276,9 @@ export default function AdminPage() {
     setEditingEvent(null);
     setShowAddProduct(false);
     setShowAddEvent(false);
-    setProductForm({ name: "", description: "", image: "", category: "bakery" });
+    setProductForm({ name: "", description: "", image_url: "", category: "bakery", sort_order: 0 });
     setEventForm({ title: "", date: "", location: "", description: "", link: "" });
+    setError("");
   };
 
   // Login Screen
@@ -195,7 +301,7 @@ export default function AdminPage() {
                 placeholder="Enter admin password"
               />
             </div>
-            {error && <p style={{ color: "#e53e3e", fontSize: "14px", marginBottom: "16px" }}>{error}</p>}
+            {loginError && <p style={{ color: "#e53e3e", fontSize: "14px", marginBottom: "16px" }}>{loginError}</p>}
             <button type="submit" style={{ ...btnPrimary, width: "100%", padding: "14px" }}>
               Login
             </button>
@@ -225,11 +331,17 @@ export default function AdminPage() {
 
       {/* Tabs */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 24px" }}>
+        {error && (
+          <div style={{ padding: "12px 16px", background: "rgba(229, 62, 62, 0.15)", border: "1px solid rgba(229, 62, 62, 0.3)", borderRadius: "8px", color: "#fc8181", fontSize: "14px", marginBottom: "24px" }}>
+            {error}
+          </div>
+        )}
+
         <div style={{ display: "flex", gap: "8px", marginBottom: "32px" }}>
-          {(["products", "events"] as const).map((tab) => (
+          {(["products", "events", "customers"] as const).map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => { setActiveTab(tab); cancelEdit(); }}
               style={{
                 padding: "12px 24px",
                 background: activeTab === tab ? "linear-gradient(135deg, #dd6b20, #c05621)" : "transparent",
@@ -242,24 +354,21 @@ export default function AdminPage() {
                 cursor: "pointer",
               }}
             >
-              {tab === "products" ? `Products (${products.length})` : `Events (${events.length})`}
+              {tab === "products" ? `Products (${products.length})` : tab === "events" ? `Events (${events.length})` : `Customers (${contacts.length})`}
             </button>
           ))}
         </div>
 
-        {/* Products Tab */}
+        {/* ─── Products Tab ─── */}
         {activeTab === "products" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
               <h2 style={{ fontSize: "24px", fontWeight: 600, color: "#f7fafc" }}>Manage Products</h2>
               {!showAddProduct && !editingProduct && (
-                <button onClick={() => setShowAddProduct(true)} style={btnPrimary}>
-                  + Add Product
-                </button>
+                <button onClick={() => setShowAddProduct(true)} style={btnPrimary}>+ Add Product</button>
               )}
             </div>
 
-            {/* Add/Edit Product Form */}
             {(showAddProduct || editingProduct) && (
               <div style={{ background: "rgba(26, 54, 93, 0.3)", border: "1px solid rgba(74, 85, 104, 0.3)", borderRadius: "12px", padding: "32px", marginBottom: "32px" }}>
                 <h3 style={{ fontSize: "18px", fontWeight: 600, color: "#f7fafc", marginBottom: "24px" }}>
@@ -269,21 +378,11 @@ export default function AdminPage() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                     <div>
                       <label style={labelStyle}>Product Name *</label>
-                      <input
-                        type="text"
-                        value={productForm.name}
-                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                        required
-                        style={inputStyle}
-                      />
+                      <input type="text" value={productForm.name} onChange={(e) => setProductForm({ ...productForm, name: e.target.value })} required style={inputStyle} />
                     </div>
                     <div>
                       <label style={labelStyle}>Category *</label>
-                      <select
-                        value={productForm.category}
-                        onChange={(e) => setProductForm({ ...productForm, category: e.target.value as Product["category"] })}
-                        style={{ ...inputStyle, cursor: "pointer" }}
-                      >
+                      <select value={productForm.category} onChange={(e) => setProductForm({ ...productForm, category: e.target.value })} style={{ ...inputStyle, cursor: "pointer" }}>
                         {productCategories.map((cat) => (
                           <option key={cat.id} value={cat.id} style={{ background: "#0f1419" }}>{cat.name}</option>
                         ))}
@@ -293,55 +392,55 @@ export default function AdminPage() {
 
                   <div style={{ marginBottom: "24px" }}>
                     <label style={labelStyle}>Description *</label>
-                    <textarea
-                      value={productForm.description}
-                      onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                      required
-                      rows={3}
-                      style={{ ...inputStyle, resize: "vertical" }}
-                    />
+                    <textarea value={productForm.description} onChange={(e) => setProductForm({ ...productForm, description: e.target.value })} required rows={3} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
 
-                  {/* Image Picker */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+                    <div>
+                      <label style={labelStyle}>Sort Order</label>
+                      <input type="number" value={productForm.sort_order} onChange={(e) => setProductForm({ ...productForm, sort_order: parseInt(e.target.value) || 0 })} style={inputStyle} />
+                    </div>
+                  </div>
+
+                  {/* Image Upload */}
                   <div style={{ marginBottom: "24px" }}>
                     <label style={labelStyle}>Product Image</label>
-                    <select
-                      value={productForm.image}
-                      onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                      style={{ ...inputStyle, cursor: "pointer" }}
-                    >
-                      <option value="" style={{ background: "#0f1419" }}>No image</option>
-                      {availableImages.map((img) => (
-                        <option key={img.path} value={img.path} style={{ background: "#0f1419" }}>
-                          {img.label}
-                        </option>
-                      ))}
-                    </select>
-                    <p style={{ fontSize: "12px", color: "#718096", marginTop: "8px" }}>
-                      Select from available images. To add new images, a developer must upload them to the repository.
-                    </p>
-
-                    {/* Image Preview */}
-                    {productForm.image && (
-                      <div style={{ marginTop: "12px", position: "relative", width: "200px", height: "140px", borderRadius: "8px", overflow: "hidden", border: "1px solid rgba(74, 85, 104, 0.3)" }}>
-                        <Image
-                          src={productForm.image}
-                          alt="Preview"
-                          fill
-                          style={{ objectFit: "cover" }}
-                          sizes="200px"
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                      <label style={{ ...btnSecondary, display: "inline-block", cursor: "pointer" }}>
+                        {uploadingImage ? "Uploading..." : "Upload Image"}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          disabled={uploadingImage}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageUpload(file);
+                          }}
                         />
+                      </label>
+                      {productForm.image_url && (
+                        <span style={{ fontSize: "13px", color: "#a0aec0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "300px" }}>
+                          {productForm.image_url.split("/").pop()}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ marginTop: "8px" }}>
+                      <label style={{ ...labelStyle, fontSize: "12px" }}>Or enter URL directly:</label>
+                      <input type="text" value={productForm.image_url} onChange={(e) => setProductForm({ ...productForm, image_url: e.target.value })} placeholder="https://... or /images/..." style={inputStyle} />
+                    </div>
+                    {productForm.image_url && (
+                      <div style={{ marginTop: "12px", position: "relative", width: "200px", height: "140px", borderRadius: "8px", overflow: "hidden", border: "1px solid rgba(74, 85, 104, 0.3)" }}>
+                        <Image src={productForm.image_url} alt="Preview" fill style={{ objectFit: "cover" }} sizes="200px" />
                       </div>
                     )}
                   </div>
 
                   <div style={{ display: "flex", gap: "12px" }}>
-                    <button type="submit" style={btnPrimary}>
-                      {editingProduct ? "Update Product" : "Add Product"}
+                    <button type="submit" disabled={saving} style={{ ...btnPrimary, opacity: saving ? 0.7 : 1 }}>
+                      {saving ? "Saving..." : editingProduct ? "Update Product" : "Add Product"}
                     </button>
-                    <button type="button" onClick={cancelEdit} style={btnSecondary}>
-                      Cancel
-                    </button>
+                    <button type="button" onClick={cancelEdit} style={btnSecondary}>Cancel</button>
                   </div>
                 </form>
               </div>
@@ -359,68 +458,27 @@ export default function AdminPage() {
                     </h3>
                     <div style={{ display: "grid", gap: "12px" }}>
                       {categoryProducts.map((product) => (
-                        <div
-                          key={product.id}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "16px",
-                            padding: "16px 20px",
-                            background: "rgba(26, 54, 93, 0.2)",
-                            border: "1px solid rgba(74, 85, 104, 0.2)",
-                            borderRadius: "10px",
-                            transition: "border-color 0.2s",
-                          }}
-                        >
-                          {/* Thumbnail */}
+                        <div key={product.id} style={{ display: "flex", alignItems: "center", gap: "16px", padding: "16px 20px", background: "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "10px" }}>
                           <div style={{ width: "64px", height: "64px", borderRadius: "8px", overflow: "hidden", background: "rgba(43, 108, 176, 0.1)", flexShrink: 0, position: "relative" }}>
-                            {product.image ? (
-                              <Image src={product.image} alt={product.name} fill style={{ objectFit: "cover" }} sizes="64px" />
+                            {product.image_url ? (
+                              <Image src={product.image_url} alt={product.name} fill style={{ objectFit: "cover" }} sizes="64px" />
                             ) : (
-                              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#4a5568", fontSize: "10px", textAlign: "center", padding: "4px" }}>
-                                No image
-                              </div>
+                              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#4a5568", fontSize: "10px", textAlign: "center", padding: "4px" }}>No image</div>
                             )}
                           </div>
-
-                          {/* Info */}
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <h4 style={{ fontSize: "16px", fontWeight: 600, color: "#f7fafc", marginBottom: "4px" }}>{product.name}</h4>
-                            <p style={{ fontSize: "13px", color: "#a0aec0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                              {product.description}
-                            </p>
+                            <p style={{ fontSize: "13px", color: "#a0aec0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{product.description}</p>
                           </div>
-
-                          {/* Actions */}
                           <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
-                            <button
-                              onClick={() => startEditProduct(product)}
-                              style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}
-                            >
-                              Edit
-                            </button>
+                            <button onClick={() => startEditProduct(product)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Edit</button>
                             {deleteConfirm === product.id ? (
                               <div style={{ display: "flex", gap: "4px" }}>
-                                <button
-                                  onClick={() => { deleteProduct(product.id); setDeleteConfirm(null); }}
-                                  style={{ padding: "8px 12px", background: "#e53e3e", border: "none", color: "#fff", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}
-                                >
-                                  Confirm
-                                </button>
-                                <button
-                                  onClick={() => setDeleteConfirm(null)}
-                                  style={{ padding: "8px 12px", background: "transparent", border: "1px solid #a0aec0", color: "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer" }}
-                                >
-                                  No
-                                </button>
+                                <button onClick={() => deleteProduct(product.id)} style={{ padding: "8px 12px", background: "#e53e3e", border: "none", color: "#fff", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}>Confirm</button>
+                                <button onClick={() => setDeleteConfirm(null)} style={{ padding: "8px 12px", background: "transparent", border: "1px solid #a0aec0", color: "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer" }}>No</button>
                               </div>
                             ) : (
-                              <button
-                                onClick={() => setDeleteConfirm(product.id)}
-                                style={{ padding: "8px 16px", background: "transparent", border: "1px solid #e53e3e", color: "#fc8181", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}
-                              >
-                                Delete
-                              </button>
+                              <button onClick={() => setDeleteConfirm(product.id)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #e53e3e", color: "#fc8181", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Delete</button>
                             )}
                           </div>
                         </div>
@@ -429,23 +487,25 @@ export default function AdminPage() {
                   </div>
                 );
               })}
+              {products.length === 0 && (
+                <div style={{ padding: "48px", background: "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "12px", textAlign: "center" }}>
+                  <p style={{ color: "#a0aec0" }}>No products yet. Click &quot;Add Product&quot; to create one, or run the seed script to import defaults.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* Events Tab */}
+        {/* ─── Events Tab ─── */}
         {activeTab === "events" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
               <h2 style={{ fontSize: "24px", fontWeight: 600, color: "#f7fafc" }}>Manage Events</h2>
               {!showAddEvent && !editingEvent && (
-                <button onClick={() => setShowAddEvent(true)} style={btnPrimary}>
-                  + Add Event
-                </button>
+                <button onClick={() => setShowAddEvent(true)} style={btnPrimary}>+ Add Event</button>
               )}
             </div>
 
-            {/* Add/Edit Event Form */}
             {(showAddEvent || editingEvent) && (
               <div style={{ background: "rgba(26, 54, 93, 0.3)", border: "1px solid rgba(74, 85, 104, 0.3)", borderRadius: "12px", padding: "32px", marginBottom: "32px" }}>
                 <h3 style={{ fontSize: "18px", fontWeight: 600, color: "#f7fafc", marginBottom: "24px" }}>
@@ -455,64 +515,30 @@ export default function AdminPage() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                     <div>
                       <label style={labelStyle}>Event Title *</label>
-                      <input
-                        type="text"
-                        value={eventForm.title}
-                        onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
-                        required
-                        style={inputStyle}
-                      />
+                      <input type="text" value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} required style={inputStyle} />
                     </div>
                     <div>
                       <label style={labelStyle}>Date *</label>
-                      <input
-                        type="text"
-                        value={eventForm.date}
-                        onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
-                        required
-                        placeholder="e.g., September 2025"
-                        style={inputStyle}
-                      />
+                      <input type="text" value={eventForm.date} onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })} required placeholder="e.g., September 2025" style={inputStyle} />
                     </div>
                   </div>
                   <div style={{ marginBottom: "24px" }}>
                     <label style={labelStyle}>Location *</label>
-                    <input
-                      type="text"
-                      value={eventForm.location}
-                      onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
-                      required
-                      placeholder="e.g., Las Vegas, NV"
-                      style={inputStyle}
-                    />
+                    <input type="text" value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} required placeholder="e.g., Las Vegas, NV" style={inputStyle} />
                   </div>
                   <div style={{ marginBottom: "24px" }}>
                     <label style={labelStyle}>Description *</label>
-                    <textarea
-                      value={eventForm.description}
-                      onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
-                      required
-                      rows={3}
-                      style={{ ...inputStyle, resize: "vertical" }}
-                    />
+                    <textarea value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} required rows={3} style={{ ...inputStyle, resize: "vertical" }} />
                   </div>
                   <div style={{ marginBottom: "24px" }}>
                     <label style={labelStyle}>Link (optional)</label>
-                    <input
-                      type="url"
-                      value={eventForm.link}
-                      onChange={(e) => setEventForm({ ...eventForm, link: e.target.value })}
-                      placeholder="https://example.com/event"
-                      style={inputStyle}
-                    />
+                    <input type="url" value={eventForm.link} onChange={(e) => setEventForm({ ...eventForm, link: e.target.value })} placeholder="https://example.com/event" style={inputStyle} />
                   </div>
                   <div style={{ display: "flex", gap: "12px" }}>
-                    <button type="submit" style={btnPrimary}>
-                      {editingEvent ? "Update Event" : "Add Event"}
+                    <button type="submit" disabled={saving} style={{ ...btnPrimary, opacity: saving ? 0.7 : 1 }}>
+                      {saving ? "Saving..." : editingEvent ? "Update Event" : "Add Event"}
                     </button>
-                    <button type="button" onClick={cancelEdit} style={btnSecondary}>
-                      Cancel
-                    </button>
+                    <button type="button" onClick={cancelEdit} style={btnSecondary}>Cancel</button>
                   </div>
                 </form>
               </div>
@@ -533,40 +559,63 @@ export default function AdminPage() {
                       <p style={{ fontSize: "13px", color: "#a0aec0" }}>{event.description}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", flexShrink: 0, marginLeft: "16px" }}>
-                      <button
-                        onClick={() => startEditEvent(event)}
-                        style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}
-                      >
-                        Edit
-                      </button>
+                      <button onClick={() => startEditEvent(event)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Edit</button>
                       {deleteConfirm === event.id ? (
                         <div style={{ display: "flex", gap: "4px" }}>
-                          <button
-                            onClick={() => { deleteEvent(event.id); setDeleteConfirm(null); }}
-                            style={{ padding: "8px 12px", background: "#e53e3e", border: "none", color: "#fff", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => setDeleteConfirm(null)}
-                            style={{ padding: "8px 12px", background: "transparent", border: "1px solid #a0aec0", color: "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer" }}
-                          >
-                            No
-                          </button>
+                          <button onClick={() => deleteEvent(event.id)} style={{ padding: "8px 12px", background: "#e53e3e", border: "none", color: "#fff", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 600 }}>Confirm</button>
+                          <button onClick={() => setDeleteConfirm(null)} style={{ padding: "8px 12px", background: "transparent", border: "1px solid #a0aec0", color: "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer" }}>No</button>
                         </div>
                       ) : (
-                        <button
-                          onClick={() => setDeleteConfirm(event.id)}
-                          style={{ padding: "8px 16px", background: "transparent", border: "1px solid #e53e3e", color: "#fc8181", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}
-                        >
-                          Delete
-                        </button>
+                        <button onClick={() => setDeleteConfirm(event.id)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #e53e3e", color: "#fc8181", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Delete</button>
                       )}
                     </div>
                   </div>
                 ))
               )}
             </div>
+          </div>
+        )}
+
+        {/* ─── Customers Tab ─── */}
+        {activeTab === "customers" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+              <h2 style={{ fontSize: "24px", fontWeight: 600, color: "#f7fafc" }}>Customer Submissions</h2>
+              <button onClick={loadContacts} style={btnSecondary}>Refresh</button>
+            </div>
+
+            {contacts.length === 0 ? (
+              <div style={{ padding: "48px", background: "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "12px", textAlign: "center" }}>
+                <p style={{ color: "#a0aec0" }}>No form submissions yet.</p>
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid rgba(74, 85, 104, 0.4)" }}>
+                      {["Date", "Name", "Email", "Company", "Phone", "Products", "Message"].map((h) => (
+                        <th key={h} style={{ padding: "12px 16px", textAlign: "left", color: "#a0aec0", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contacts.map((c) => (
+                      <tr key={c.id} style={{ borderBottom: "1px solid rgba(74, 85, 104, 0.2)" }}>
+                        <td style={{ padding: "12px 16px", color: "#a0aec0", whiteSpace: "nowrap" }}>
+                          {new Date(c.created_at).toLocaleDateString()}
+                        </td>
+                        <td style={{ padding: "12px 16px", color: "#f7fafc", fontWeight: 500 }}>{c.name}</td>
+                        <td style={{ padding: "12px 16px", color: "#63b3ed" }}>{c.email}</td>
+                        <td style={{ padding: "12px 16px", color: "#a0aec0" }}>{c.company || "—"}</td>
+                        <td style={{ padding: "12px 16px", color: "#a0aec0" }}>{c.phone || "—"}</td>
+                        <td style={{ padding: "12px 16px", color: "#a0aec0", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.products || c.product_interest || "—"}</td>
+                        <td style={{ padding: "12px 16px", color: "#a0aec0", maxWidth: "300px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.message}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
