@@ -43,14 +43,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
         if (productsRes.data && productsRes.data.length > 0) {
           setProducts(
-            productsRes.data.map((p) => ({
-              id: p.id,
-              name: p.name,
-              description: p.description,
-              image_url: p.image_url || "",
-              pdf_url: p.pdf_url || "",
-              category: p.category,
-            }))
+            productsRes.data
+              .filter((p) => !p.archived)
+              .map((p) => ({
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                image_url: p.image_url || "",
+                pdf_url: p.pdf_url || "",
+                category: p.category,
+              }))
           );
         }
 

@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
     pdf_url: pdf_url || "",
     category,
     sort_order: sort_order ?? 0,
+    archived: false,
   }).select().single();
 
   if (error) {

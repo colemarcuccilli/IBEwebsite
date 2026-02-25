@@ -86,7 +86,7 @@ export default function Hero() {
               priority
             />
           </div>
-          <p
+          <h1
             className="hero-subtitle"
             style={{
               fontSize: "clamp(24px, 4vw, 42px)",
@@ -98,7 +98,7 @@ export default function Hero() {
             }}
           >
             Industrial Bakery Equipment
-          </p>
+          </h1>
           <p
             className="hero-mission"
             style={{
@@ -182,7 +182,7 @@ export default function Hero() {
           transform: "translateX(-50%)",
         }}
       >
-        <svg width="24" height="24" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24">
+        <svg width="24" height="24" fill="none" stroke="rgba(255,255,255,0.5)" viewBox="0 0 24 24" aria-label="Scroll down">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </div>

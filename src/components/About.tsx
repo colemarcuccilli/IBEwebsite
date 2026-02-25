@@ -56,9 +56,12 @@ export default function About() {
           <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginBottom: "20px", maxWidth: "650px", margin: "0 auto 20px" }}>
             Steel and stainless steel fabrication for many industries including baking, chicken processing, seafood processing, meat drying and smoking, government and military, dietary supplement, restaurant, hotel, snack food, and retail grocery.
           </p>
-          <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: "48px", maxWidth: "600px", margin: "0 auto 48px" }}>
+          <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: "12px", maxWidth: "600px", margin: "0 auto 12px" }}>
             Fort Wayne, IN &mdash; In business since 2008
           </p>
+          <a href="mailto:ibepurchasing@yahoo.com" style={{ display: "inline-block", fontSize: "16px", color: "#5F8A9E", textDecoration: "none", marginBottom: "48px", fontWeight: 500, transition: "color 0.3s ease" }}>
+            ibepurchasing@yahoo.com
+          </a>
 
           <div className="industries-container" style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
             {industries.map((industry) => (

@@ -277,6 +277,20 @@ export default function AdminPage() {
     }
   };
 
+  const toggleArchiveProduct = async (id: string, currentlyArchived: boolean) => {
+    setError("");
+    try {
+      await apiFetch(`/api/admin/products/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ archived: !currentlyArchived }),
+      });
+      await loadProducts();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Archive toggle failed");
+    }
+  };
+
   const startEditProduct = (product: ProductRow) => {
     setEditingProduct(product);
     setProductForm({
@@ -594,7 +608,7 @@ export default function AdminPage() {
                     </h3>
                     <div style={{ display: "grid", gap: "12px" }}>
                       {categoryProducts.map((product) => (
-                        <div key={product.id} style={{ display: "flex", alignItems: "flex-start", gap: "16px", padding: "16px 20px", background: "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "10px", overflow: "hidden" }}>
+                        <div key={product.id} style={{ display: "flex", alignItems: "flex-start", gap: "16px", padding: "16px 20px", background: product.archived ? "rgba(74, 85, 104, 0.15)" : "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "10px", overflow: "hidden", opacity: product.archived ? 0.6 : 1 }}>
                           <div style={{ width: "64px", height: "64px", borderRadius: "8px", overflow: "hidden", background: "rgba(43, 108, 176, 0.1)", flexShrink: 0, position: "relative" }}>
                             {product.image_url ? (
                               <Image src={product.image_url} alt={product.name} fill style={{ objectFit: "cover" }} sizes="64px" />
@@ -603,10 +617,16 @@ export default function AdminPage() {
                             )}
                           </div>
                           <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-                            <h4 style={{ fontSize: "16px", fontWeight: 600, color: "#f7fafc", marginBottom: "4px", wordBreak: "break-word" }}>{product.name}</h4>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                              <h4 style={{ fontSize: "16px", fontWeight: 600, color: "#f7fafc", wordBreak: "break-word" }}>{product.name}</h4>
+                              {product.archived && (
+                                <span style={{ padding: "2px 8px", background: "rgba(160, 174, 192, 0.2)", border: "1px solid rgba(160, 174, 192, 0.3)", borderRadius: "4px", fontSize: "11px", color: "#a0aec0", fontWeight: 600, whiteSpace: "nowrap" }}>ARCHIVED</span>
+                              )}
+                            </div>
                             <p style={{ fontSize: "13px", color: "#a0aec0", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: "1.5" }}>{product.description}</p>
                           </div>
                           <div style={{ display: "flex", gap: "8px", flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                            <button onClick={() => toggleArchiveProduct(product.id, product.archived)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid", borderColor: product.archived ? "#48bb78" : "#a0aec0", color: product.archived ? "#68d391" : "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>{product.archived ? "Restore" : "Archive"}</button>
                             <button onClick={() => startEditProduct(product)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Edit</button>
                             {deleteConfirm === product.id ? (
                               <div style={{ display: "flex", gap: "4px" }}>

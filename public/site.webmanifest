@@ -1,0 +1,16 @@
+{
+  "name": "Industrial Bakery Equipment",
+  "short_name": "IBE",
+  "description": "Steel & stainless steel food service equipment since 2008",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1C2B36",
+  "theme_color": "#C05621",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
