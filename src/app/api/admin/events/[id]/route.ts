@@ -14,7 +14,7 @@ export async function PUT(
   const body = await request.json();
 
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
-  for (const key of ["title", "date", "location", "description", "link", "pdf_url"]) {
+  for (const key of ["title", "date", "location", "description", "link", "pdf_url", "archived"]) {
     if (body[key] !== undefined) updates[key] = body[key];
   }
 

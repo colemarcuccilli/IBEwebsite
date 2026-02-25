@@ -19,6 +19,7 @@ export interface EventRow {
   description: string;
   link: string;
   pdf_url: string;
+  archived: boolean;
   created_at: string;
   updated_at: string;
 }

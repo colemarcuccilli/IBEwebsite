@@ -58,14 +58,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
         if (eventsRes.data && eventsRes.data.length > 0) {
           setEvents(
-            eventsRes.data.map((e) => ({
-              id: e.id,
-              title: e.title,
-              date: e.date,
-              location: e.location,
-              description: e.description,
-              link: e.link || "",
-            }))
+            eventsRes.data
+              .filter((e) => !e.archived)
+              .map((e) => ({
+                id: e.id,
+                title: e.title,
+                date: e.date,
+                location: e.location,
+                description: e.description,
+                link: e.link || "",
+              }))
           );
         }
 

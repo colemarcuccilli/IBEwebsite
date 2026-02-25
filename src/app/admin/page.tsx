@@ -348,6 +348,20 @@ export default function AdminPage() {
     }
   };
 
+  const toggleArchiveEvent = async (id: string, currentlyArchived: boolean) => {
+    setError("");
+    try {
+      await apiFetch(`/api/admin/events/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ archived: !currentlyArchived }),
+      });
+      await loadEvents();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Archive toggle failed");
+    }
+  };
+
   const startEditEvent = (event: EventRow) => {
     setEditingEvent(event);
     setEventForm({
@@ -778,13 +792,19 @@ export default function AdminPage() {
                 </div>
               ) : (
                 events.map((event) => (
-                  <div key={event.id} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "20px 24px", background: "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "10px", gap: "16px" }}>
+                  <div key={event.id} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "20px 24px", background: event.archived ? "rgba(74, 85, 104, 0.15)" : "rgba(26, 54, 93, 0.2)", border: "1px solid rgba(74, 85, 104, 0.2)", borderRadius: "10px", gap: "16px", opacity: event.archived ? 0.6 : 1 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <h4 style={{ fontSize: "16px", fontWeight: 600, color: "#f7fafc", marginBottom: "4px" }}>{event.title}</h4>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                        <h4 style={{ fontSize: "16px", fontWeight: 600, color: "#f7fafc" }}>{event.title}</h4>
+                        {event.archived && (
+                          <span style={{ padding: "2px 8px", background: "rgba(160, 174, 192, 0.2)", border: "1px solid rgba(160, 174, 192, 0.3)", borderRadius: "4px", fontSize: "11px", color: "#a0aec0", fontWeight: 600, whiteSpace: "nowrap" }}>ARCHIVED</span>
+                        )}
+                      </div>
                       <p style={{ fontSize: "14px", color: "#dd6b20", marginBottom: "4px" }}>{event.date} — {event.location}</p>
                       <p style={{ fontSize: "13px", color: "#a0aec0", wordBreak: "break-word" }}>{event.description}</p>
                     </div>
                     <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                      <button onClick={() => toggleArchiveEvent(event.id, event.archived)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid", borderColor: event.archived ? "#48bb78" : "#a0aec0", color: event.archived ? "#68d391" : "#a0aec0", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>{event.archived ? "Restore" : "Archive"}</button>
                       <button onClick={() => startEditEvent(event)} style={{ padding: "8px 16px", background: "transparent", border: "1px solid #2b6cb0", color: "#63b3ed", borderRadius: "6px", fontSize: "12px", cursor: "pointer", fontWeight: 500 }}>Edit</button>
                       {deleteConfirm === event.id ? (
                         <div style={{ display: "flex", gap: "4px" }}>
