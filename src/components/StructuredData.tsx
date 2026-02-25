@@ -7,7 +7,7 @@ export default function StructuredData() {
     alternateName: "IBE",
     url: "https://www.ibefw.com",
     telephone: "260-710-0063",
-    email: "ibepurchasing@yahoo.com",
+    email: ["sales@industrialbakeryequipment.com", "ibepurchasing@yahoo.com"],
     description:
       "Steel and stainless steel fabrication for food service equipment, bakery racks, blast freeze racks, wire carts, dough troughs, and custom wire and sheet metal products. Serving over a dozen industries since 2008.",
     foundingDate: "2008",

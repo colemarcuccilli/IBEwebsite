@@ -59,9 +59,14 @@ export default function About() {
           <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: "12px", maxWidth: "600px", margin: "0 auto 12px" }}>
             Fort Wayne, IN &mdash; In business since 2008
           </p>
-          <a href="mailto:ibepurchasing@yahoo.com" style={{ display: "inline-block", fontSize: "16px", color: "#5F8A9E", textDecoration: "none", marginBottom: "48px", fontWeight: 500, transition: "color 0.3s ease" }}>
-            ibepurchasing@yahoo.com
-          </a>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", marginBottom: "48px" }}>
+            <a href="mailto:sales@industrialbakeryequipment.com" style={{ fontSize: "16px", color: "#5F8A9E", textDecoration: "none", fontWeight: 500 }}>
+              sales@industrialbakeryequipment.com
+            </a>
+            <a href="mailto:ibepurchasing@yahoo.com" style={{ fontSize: "16px", color: "#5F8A9E", textDecoration: "none", fontWeight: 500 }}>
+              ibepurchasing@yahoo.com
+            </a>
+          </div>
 
           <div className="industries-container" style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
             {industries.map((industry) => (

@@ -310,6 +310,9 @@ export default function Contact() {
               {submitStatus === "error" && (
                 <div style={{ marginTop: "20px", padding: "16px", background: "rgba(245, 101, 101, 0.1)", border: "1px solid rgba(245, 101, 101, 0.3)", borderRadius: "8px", color: "#c53030", textAlign: "center" }}>
                   Something went wrong. Please try again or email us directly at{" "}
+                  <a href="mailto:sales@industrialbakeryequipment.com" style={{ color: "#c53030", fontWeight: 600 }}>
+                    sales@industrialbakeryequipment.com
+                  </a>{" "}or{" "}
                   <a href="mailto:ibepurchasing@yahoo.com" style={{ color: "#c53030", fontWeight: 600 }}>
                     ibepurchasing@yahoo.com
                   </a>
@@ -317,6 +320,9 @@ export default function Contact() {
               )}
               <p style={{ marginTop: "16px", fontSize: "13px", color: "#5A6E78", textAlign: "center" }}>
                 You can also reach us directly at{" "}
+                <a href="mailto:sales@industrialbakeryequipment.com" style={{ color: "#5F8A9E", fontWeight: 500 }}>
+                  sales@industrialbakeryequipment.com
+                </a>{" "}or{" "}
                 <a href="mailto:ibepurchasing@yahoo.com" style={{ color: "#5F8A9E", fontWeight: 500 }}>
                   ibepurchasing@yahoo.com
                 </a>
@@ -333,6 +339,12 @@ export default function Contact() {
 
               <a href="tel:260-710-0063" style={{ display: "block", fontSize: "28px", color: "#ffffff", fontWeight: 700, textDecoration: "none", marginBottom: "12px", lineHeight: 1.3 }}>
                 260-710-0063
+              </a>
+              <a href="mailto:sales@industrialbakeryequipment.com" style={{ display: "block", fontSize: "16px", color: "#5F8A9E", textDecoration: "none", marginBottom: "6px", fontWeight: 500, transition: "color 0.3s ease" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#5F8A9E")}
+              >
+                sales@industrialbakeryequipment.com
               </a>
               <a href="mailto:ibepurchasing@yahoo.com" style={{ display: "block", fontSize: "16px", color: "#5F8A9E", textDecoration: "none", marginBottom: "12px", fontWeight: 500, transition: "color 0.3s ease" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}

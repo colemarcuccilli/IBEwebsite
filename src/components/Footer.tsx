@@ -17,7 +17,11 @@ export default function Footer() {
             </p>
             <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.5)", marginBottom: "8px" }}>Fort Wayne, IN</p>
             <a href="tel:260-710-0063" style={{ display: "block", fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", textDecoration: "none", marginBottom: "6px" }}>260-710-0063</a>
-            <a href="mailto:ibepurchasing@yahoo.com" style={{ fontSize: "14px", color: "#5F8A9E", textDecoration: "none", transition: "color 0.3s ease" }}
+            <a href="mailto:sales@industrialbakeryequipment.com" style={{ display: "block", fontSize: "14px", color: "#5F8A9E", textDecoration: "none", marginBottom: "4px", transition: "color 0.3s ease" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#5F8A9E")}
+            >sales@industrialbakeryequipment.com</a>
+            <a href="mailto:ibepurchasing@yahoo.com" style={{ display: "block", fontSize: "14px", color: "#5F8A9E", textDecoration: "none", transition: "color 0.3s ease" }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#5F8A9E")}
             >ibepurchasing@yahoo.com</a>
