@@ -4,6 +4,7 @@ export interface Product {
   description: string;
   image_url: string;
   category: string;
+  pdf_url?: string;
 }
 
 export const defaultProducts: Product[] = [
@@ -11,9 +12,10 @@ export const defaultProducts: Product[] = [
   {
     id: "bread-racks",
     name: "All Purpose Bread & Bun Cooling Racks",
-    description: "All steel construction for high capacities and durable enough for rough industrial use. Constructed in component parts for cost effective maintenance and repair. Shelves remove to create more clearance or easily replace if damaged. Double rod runners allow you to pull shelves 2/3 their depth out for convenient product loading and unloading. Available in Mobile and Stationary configurations.",
+    description: "All steel construction for high capacities and durable enough for rough industrial use. Constructed in component parts for cost effective maintenance and repair. Shelves remove to create more clearance or easily replace if damaged. Double rod runners allow you to pull shelves 2/3 their depth out for convenient product loading and unloading. Available in Mobile and Stationary configurations.\n\nAvailable in 18x54, 24x66, and 28x66 frame sizes.\n\nComes in standard shelf counts of 8, 9, 10, 15, and 17. Custom shelf counts available.\n\nAvailable Finishes: Galvanized, Glass-Bead Blasted Finish, Electro-Polished Stainless Steel\n\nMobile Options: Single Rod Runner, Double Rod Runner, Various Caster Options, Custom Sizes Available",
     image_url: "/images/Breadrack.jpg",
     category: "bakery",
+    pdf_url: "/pdf/Bread and Bun Cooling Racks.pdf",
   },
   {
     id: "pan-tree-racks",
@@ -35,6 +37,7 @@ export const defaultProducts: Product[] = [
     description: "Dual-purpose racks for transport and retail display. Seamlessly move from production to storefront.",
     image_url: "/images/BreatTransportRack.png",
     category: "bakery",
+    pdf_url: "/pdf/Bread Transport Rack Handout.pdf",
   },
   {
     id: "dough-troughs",
@@ -42,20 +45,22 @@ export const defaultProducts: Product[] = [
     description: "The exceptional quality of Industrial Bakery Equipment troughs has made them a standard in the industry. Available in 11 gauge stainless steel or 11 gauge standard steel. The rim and caster shoes are completely sealed for sanitation. Welds are ground to a BISSC approved smooth, crevice-free surface. Solid steel corners for added durability.\n\nBody Styles: Standard, Control Flow – Rack and Pinion Geared Gate, Control Flow – Drop Chute Gate, Control Flow – Lift Gate, Sloping Bottom, Drop-Side Trough",
     image_url: "/images/croppedtub.png",
     category: "bakery",
+    pdf_url: "/pdf/Dough Troughs.pdf",
   },
   {
     id: "glazing-racks",
     name: "Glazing Racks",
-    description: "Designed for efficient glazing operations. Features optimal spacing for consistent coverage.",
+    description: "Designed for efficient glazing operations. Features optimal spacing for consistent coverage.\n\nAvailable Sizes: 17x25, 23x23, 34x24",
     image_url: "/images/Glazing Rack.jpg",
     category: "bakery",
   },
   {
     id: "fry-screens",
     name: "Fry Screens",
-    description: "A flat, one-piece stamped metal mesh with 1/4\" openings, welded to a wire frame and three reinforcing bars. Packed 12 per carton. Available in multiple sizes.\n\nAvailable Finishes: Nickel Plated, All Stainless Steel",
+    description: "Available in durable stamped metal mesh or wire welded mesh. Stamped metal mesh features 1/4\" openings, welded to a wire frame and three reinforcing bars. Packed 12 per carton.\n\nAvailable Sizes: 25x17, 23x23, 33x23\n\nAvailable Finishes: Nickel Plated, All Stainless Steel",
     image_url: "/images/FryScreens.png",
     category: "bakery",
+    pdf_url: "/pdf/Fry Screen Handout.pdf",
   },
   {
     id: "bagel-baskets",
@@ -85,6 +90,7 @@ export const defaultProducts: Product[] = [
     description: "All steel construction for high capacities and durable enough for rough industrial use. Constructed in component parts for cost effective maintenance and repair. Shelves remove to create more clearance or easily replace if damaged. Double rod runners allow you to pull shelves 2/3 their depth out for convenient product loading and unloading.\n\nAvailable in 18x54, 24x66, and 28x66 frame sizes.\n\nAvailable Finishes: Galvanized, Glass-Bead Blasted Finish, Electro-Polished Stainless Steel\n\nMobile Options: Single Rod Runner, Double Rod Runner, Various Caster Options, Custom Sizes Available",
     image_url: "/images/Breadrack.jpg",
     category: "blast-freeze",
+    pdf_url: "/pdf/Blast Freezer Racks.pdf",
   },
   // Carts
   {
@@ -107,6 +113,7 @@ export const defaultProducts: Product[] = [
     description: "All steel construction with an epoxy e-coat base and grey polyester powder coated top coat. The top shelf folds up to accommodate larger packages. Features non-marking wheels and casters. Nestable design with a 15\" nesting distance for compact storage.",
     image_url: "/images/CarryoutCart.png",
     category: "carts",
+    pdf_url: "/pdf/Carryout Cart Handout.pdf",
   },
   {
     id: "receiving-carts",

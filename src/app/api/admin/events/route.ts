@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { id, title, date, location, description, link } = body;
+  const { id, title, date, location, description, link, pdf_url } = body;
 
   if (!id || !title || !date || !location || !description) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
     location,
     description,
     link: link || "",
+    pdf_url: pdf_url || "",
   }).select().single();
 
   if (error) {

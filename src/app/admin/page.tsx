@@ -86,8 +86,9 @@ export default function AdminPage() {
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [editingProduct, setEditingProduct] = useState<ProductRow | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [productForm, setProductForm] = useState({ name: "", description: "", image_url: "", category: "bakery", sort_order: 0 });
+  const [productForm, setProductForm] = useState({ name: "", description: "", image_url: "", pdf_url: "", category: "bakery", sort_order: 0 });
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
 
   // Categories state
   const [categories, setCategories] = useState<CategoryRow[]>([]);
@@ -99,7 +100,8 @@ export default function AdminPage() {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
   const [showAddEvent, setShowAddEvent] = useState(false);
-  const [eventForm, setEventForm] = useState({ title: "", date: "", location: "", description: "", link: "" });
+  const [eventForm, setEventForm] = useState({ title: "", date: "", location: "", description: "", link: "", pdf_url: "" });
+  const [uploadingEventPdf, setUploadingEventPdf] = useState(false);
 
   // Customers state
   const [contacts, setContacts] = useState<ContactRow[]>([]);
@@ -179,19 +181,26 @@ export default function AdminPage() {
     setIsAuthenticated(false);
   };
 
-  // Image upload
-  const handleImageUpload = async (file: File) => {
-    setUploadingImage(true);
+  // File upload helper
+  const handleFileUpload = async (file: File, target: "product_image" | "product_pdf" | "event_pdf") => {
+    const setUploading = target === "product_image" ? setUploadingImage : target === "product_pdf" ? setUploadingPdf : setUploadingEventPdf;
+    setUploading(true);
     setError("");
     try {
       const form = new FormData();
       form.append("file", file);
       const data = await apiFetch("/api/admin/upload", { method: "POST", body: form });
-      setProductForm((prev) => ({ ...prev, image_url: data.url }));
+      if (target === "product_image") {
+        setProductForm((prev) => ({ ...prev, image_url: data.url }));
+      } else if (target === "product_pdf") {
+        setProductForm((prev) => ({ ...prev, pdf_url: data.url }));
+      } else {
+        setEventForm((prev) => ({ ...prev, pdf_url: data.url }));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
-      setUploadingImage(false);
+      setUploading(false);
     }
   };
 
@@ -274,6 +283,7 @@ export default function AdminPage() {
       name: product.name,
       description: product.description,
       image_url: product.image_url || "",
+      pdf_url: product.pdf_url || "",
       category: product.category,
       sort_order: product.sort_order || 0,
     });
@@ -332,6 +342,7 @@ export default function AdminPage() {
       location: event.location,
       description: event.description,
       link: event.link || "",
+      pdf_url: event.pdf_url || "",
     });
     setShowAddEvent(false);
   };
@@ -342,8 +353,8 @@ export default function AdminPage() {
     setShowAddProduct(false);
     setShowAddEvent(false);
     setShowAddCategory(false);
-    setProductForm({ name: "", description: "", image_url: "", category: categories[0]?.id || "bakery", sort_order: 0 });
-    setEventForm({ title: "", date: "", location: "", description: "", link: "" });
+    setProductForm({ name: "", description: "", image_url: "", pdf_url: "", category: categories[0]?.id || "bakery", sort_order: 0 });
+    setEventForm({ title: "", date: "", location: "", description: "", link: "", pdf_url: "" });
     setError("");
   };
 
@@ -509,10 +520,10 @@ export default function AdminPage() {
                         {uploadingImage ? "Uploading..." : "Upload Image"}
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/*,.pdf"
                           style={{ display: "none" }}
                           disabled={uploadingImage}
-                          onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file); }}
+                          onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, "product_image"); }}
                         />
                       </label>
                       {productForm.image_url && (
@@ -530,6 +541,35 @@ export default function AdminPage() {
                         <Image src={productForm.image_url} alt="Preview" fill style={{ objectFit: "cover" }} sizes="200px" />
                       </div>
                     )}
+                  </div>
+
+                  {/* PDF Upload */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <label style={labelStyle}>PDF Spec Sheet</label>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                      <label style={{ ...btnSecondary, display: "inline-block", cursor: "pointer" }}>
+                        {uploadingPdf ? "Uploading..." : "Upload PDF"}
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          style={{ display: "none" }}
+                          disabled={uploadingPdf}
+                          onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, "product_pdf"); }}
+                        />
+                      </label>
+                      {productForm.pdf_url && (
+                        <span style={{ fontSize: "13px", color: "#a0aec0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "300px" }}>
+                          {decodeURIComponent(productForm.pdf_url.split("/").pop() || "")}
+                        </span>
+                      )}
+                      {productForm.pdf_url && (
+                        <button type="button" onClick={() => setProductForm({ ...productForm, pdf_url: "" })} style={{ padding: "0", background: "none", border: "none", color: "#fc8181", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
+                      )}
+                    </div>
+                    <div style={{ marginTop: "8px" }}>
+                      <label style={{ ...labelStyle, fontSize: "12px" }}>Or enter PDF URL directly:</label>
+                      <input type="text" value={productForm.pdf_url} onChange={(e) => setProductForm({ ...productForm, pdf_url: e.target.value })} placeholder="https://... or /pdf/..." style={inputStyle} />
+                    </div>
                   </div>
 
                   <div style={{ display: "flex", gap: "12px" }}>
@@ -670,6 +710,36 @@ export default function AdminPage() {
                     <label style={labelStyle}>Link (optional)</label>
                     <input type="url" value={eventForm.link} onChange={(e) => setEventForm({ ...eventForm, link: e.target.value })} placeholder="https://example.com/event" style={inputStyle} />
                   </div>
+
+                  {/* Event PDF Upload */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <label style={labelStyle}>PDF Attachment (optional)</label>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                      <label style={{ ...btnSecondary, display: "inline-block", cursor: "pointer" }}>
+                        {uploadingEventPdf ? "Uploading..." : "Upload PDF"}
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          style={{ display: "none" }}
+                          disabled={uploadingEventPdf}
+                          onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, "event_pdf"); }}
+                        />
+                      </label>
+                      {eventForm.pdf_url && (
+                        <span style={{ fontSize: "13px", color: "#a0aec0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "300px" }}>
+                          {decodeURIComponent(eventForm.pdf_url.split("/").pop() || "")}
+                        </span>
+                      )}
+                      {eventForm.pdf_url && (
+                        <button type="button" onClick={() => setEventForm({ ...eventForm, pdf_url: "" })} style={{ padding: "0", background: "none", border: "none", color: "#fc8181", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
+                      )}
+                    </div>
+                    <div style={{ marginTop: "8px" }}>
+                      <label style={{ ...labelStyle, fontSize: "12px" }}>Or enter PDF URL directly:</label>
+                      <input type="text" value={eventForm.pdf_url} onChange={(e) => setEventForm({ ...eventForm, pdf_url: e.target.value })} placeholder="https://... or /pdf/..." style={inputStyle} />
+                    </div>
+                  </div>
+
                   <div style={{ display: "flex", gap: "12px" }}>
                     <button type="submit" disabled={saving} style={{ ...btnPrimary, opacity: saving ? 0.7 : 1 }}>
                       {saving ? "Saving..." : editingEvent ? "Update Event" : "Add Event"}

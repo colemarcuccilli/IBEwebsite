@@ -14,9 +14,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const ext = file.name.split(".").pop() || "jpg";
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const isPdf = ext === "pdf";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const filePath = `ProductPhotos/${filename}`;
+  const folder = isPdf ? "PDFs" : "ProductPhotos";
+  const filePath = `${folder}/${filename}`;
 
   const arrayBuffer = await file.arrayBuffer();
   const buffer = new Uint8Array(arrayBuffer);

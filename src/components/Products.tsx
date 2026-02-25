@@ -122,6 +122,44 @@ function AccordionCard({ product }: { product: Product }) {
                   {paragraph}
                 </p>
               ))}
+              {product.pdf_url && (
+                <a
+                  href={product.pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "16px",
+                    padding: "10px 20px",
+                    backgroundColor: "#5F8A9E",
+                    color: "#ffffff",
+                    textDecoration: "none",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    letterSpacing: "0.5px",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#3D6478";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#5F8A9E";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download PDF Spec Sheet
+                </a>
+              )}
             </div>
 
             {/* Quantity + Add to Quote */}

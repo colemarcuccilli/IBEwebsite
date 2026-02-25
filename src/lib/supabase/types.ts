@@ -3,6 +3,7 @@ export interface ProductRow {
   name: string;
   description: string;
   image_url: string;
+  pdf_url: string;
   category: string;
   sort_order: number;
   created_at: string;
@@ -16,6 +17,7 @@ export interface EventRow {
   location: string;
   description: string;
   link: string;
+  pdf_url: string;
   created_at: string;
   updated_at: string;
 }

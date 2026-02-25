@@ -89,12 +89,12 @@ export default function Hero() {
           <p
             className="hero-subtitle"
             style={{
-              fontSize: "clamp(20px, 3vw, 32px)",
-              color: "rgba(255,255,255,0.85)",
+              fontSize: "clamp(24px, 4vw, 42px)",
+              color: "#ffffff",
               marginBottom: "32px",
-              fontWeight: 300,
+              fontWeight: 700,
               fontStyle: "italic",
-              letterSpacing: "2px",
+              letterSpacing: "3px",
             }}
           >
             Industrial Bakery Equipment

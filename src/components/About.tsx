@@ -53,6 +53,9 @@ export default function About() {
           <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "#ffffff", marginBottom: "24px", lineHeight: 1.3 }}>
             Steel &amp; stainless steel wire and sheet metal equipment for over a dozen industries.
           </h2>
+          <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginBottom: "20px", maxWidth: "650px", margin: "0 auto 20px" }}>
+            Steel and stainless steel fabrication for many industries including baking, chicken processing, seafood processing, meat drying and smoking, government and military, dietary supplement, restaurant, hotel, snack food, and retail grocery.
+          </p>
           <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: "48px", maxWidth: "600px", margin: "0 auto 48px" }}>
             Fort Wayne, IN &mdash; In business since 2008
           </p>

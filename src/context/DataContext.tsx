@@ -48,6 +48,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
               name: p.name,
               description: p.description,
               image_url: p.image_url || "",
+              pdf_url: p.pdf_url || "",
               category: p.category,
             }))
           );

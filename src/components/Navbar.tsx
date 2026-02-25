@@ -97,7 +97,7 @@ export default function Navbar() {
               style={{ objectFit: "contain" }}
               priority
             />
-            <span style={{ fontSize: "12px", fontStyle: "italic", color: "#5A6E78", letterSpacing: "1px", whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: "18px", fontWeight: 700, fontStyle: "italic", color: "#C05621", letterSpacing: "1.5px", whiteSpace: "nowrap" }}>
               Industrial Bakery Equipment
             </span>
           </a>
@@ -117,17 +117,17 @@ export default function Navbar() {
                   href={link.href}
                   className="nav-item"
                   style={{
-                    color: "#4A5E68",
+                    color: isScrolled ? "#1C2B36" : "#ffffff",
                     textDecoration: "none",
-                    fontSize: "14px",
-                    fontWeight: 500,
+                    fontSize: "16px",
+                    fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: "1px",
                     transition: "color 0.3s ease",
                     position: "relative",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#4A5E68")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = isScrolled ? "#1C2B36" : "#ffffff")}
                 >
                   {link.name}
                 </a>
@@ -136,24 +136,27 @@ export default function Navbar() {
                 href="#contact"
                 className="nav-item"
                 style={{
-                  backgroundColor: "#5F8A9E",
+                  backgroundColor: "#C05621",
                   color: "#ffffff",
-                  padding: "12px 24px",
+                  padding: "14px 28px",
                   borderRadius: "4px",
                   textDecoration: "none",
-                  fontSize: "14px",
-                  fontWeight: 600,
+                  fontSize: "15px",
+                  fontWeight: 700,
                   textTransform: "uppercase",
-                  letterSpacing: "1px",
+                  letterSpacing: "1.5px",
                   transition: "all 0.3s ease",
+                  boxShadow: "0 2px 8px rgba(192, 86, 33, 0.3)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#C05621";
+                  e.currentTarget.style.backgroundColor = "#9c4119";
                   e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(192, 86, 33, 0.4)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#5F8A9E";
+                  e.currentTarget.style.backgroundColor = "#C05621";
                   e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(192, 86, 33, 0.3)";
                 }}
               >
                 Get Quote
