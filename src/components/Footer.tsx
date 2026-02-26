@@ -92,6 +92,21 @@ export default function Footer() {
             <span style={{ fontSize: "14px", color: "#c05621", fontWeight: 600 }}>2008</span>
           </div>
         </div>
+        <div style={{ textAlign: "center", paddingTop: "16px" }}>
+          <span style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.3)" }}>
+            Website developed by{" "}
+            <a
+              href="https://sweetdreams.us"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "rgba(255, 255, 255, 0.4)", textDecoration: "none", transition: "color 0.3s ease" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#C05621")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.4)")}
+            >
+              Sweet Dreams
+            </a>
+          </span>
+        </div>
       </div>
     </footer>
   );

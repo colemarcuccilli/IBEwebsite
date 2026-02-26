@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "Industrial Bakery Equipment (IBE) specializes in food service equipment, bakery racks, bread racks, blast freeze racks, wire carts, dough troughs, and custom wire and sheet metal products. Serving the baking, food processing, seafood, restaurant, and retail grocery industries since 2008. Located in Fort Wayne, IN.",
   keywords: "industrial bakery equipment, IBE, bakery racks, bread racks, bread cooling racks, pan tree racks, dough troughs, blast freeze racks, drying racks, wire carts, mail carts, platform trucks, nesting carts, receiving carts, fry screens, bagel baskets, donut baskets, pie racks, glazing racks, custom racks, food service equipment, sheet metal products, stainless steel fabrication, steel wire products, Fort Wayne, Indiana, seafood processing equipment, chicken processing equipment, meat drying racks, commercial bakery equipment",
   authors: [{ name: "Industrial Bakery Equipment" }],
-  metadataBase: new URL("https://www.ibefw.com"),
+  metadataBase: new URL("https://www.industrialbakeryequipment.com"),
   alternates: {
     canonical: "/",
   },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     description: "Steel & stainless steel fabrication for bakery racks, blast freeze racks, wire carts, dough troughs, and custom equipment. Serving food service industries since 2008.",
     type: "website",
     locale: "en_US",
-    url: "https://www.ibefw.com",
+    url: "https://www.industrialbakeryequipment.com",
     siteName: "Industrial Bakery Equipment",
     images: [
       {

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://www.ibefw.com/sitemap.xml
+Sitemap: https://www.industrialbakeryequipment.com/sitemap.xml

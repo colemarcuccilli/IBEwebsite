@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,79 @@ import { Product } from "@/data/products";
 import { useQuote } from "@/context/QuoteContext";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function VideoModal({ src, title, onClose }: { src: string; title: string; onClose: () => void }) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [handleKeyDown]);
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        background: "rgba(0, 0, 0, 0.85)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
+    >
+      <div style={{ position: "relative", maxWidth: "800px", width: "100%" }}>
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: "-44px",
+            right: "0",
+            background: "none",
+            border: "none",
+            color: "#ffffff",
+            fontSize: "32px",
+            cursor: "pointer",
+            lineHeight: 1,
+            padding: "4px 8px",
+          }}
+          aria-label="Close video"
+        >
+          &times;
+        </button>
+        <p style={{ color: "#ffffff", fontSize: "16px", fontWeight: 600, marginBottom: "12px", textAlign: "center" }}>
+          {title}
+        </p>
+        <video
+          ref={videoRef}
+          src={src}
+          controls
+          autoPlay
+          playsInline
+          style={{
+            width: "100%",
+            borderRadius: "8px",
+            background: "#000",
+            maxHeight: "70vh",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function AccordionCard({ product }: { product: Product }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -219,9 +292,15 @@ function AccordionCard({ product }: { product: Product }) {
   );
 }
 
+const demoVideos = [
+  { src: "/video/spacesaver.mp4", title: "Space Saver Rack Demo", label: "Space Saver" },
+  { src: "/video/SpringRack.mp4", title: "Spring Rack Demo", label: "Spring Rack" },
+];
+
 export default function Products() {
   const sectionRef = useRef<HTMLElement>(null);
   const { products } = useData();
+  const [activeVideo, setActiveVideo] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -267,6 +346,56 @@ export default function Products() {
             <AccordionCard key={product.id} product={product} />
           ))}
         </div>
+
+        {/* Video Demos */}
+        <div style={{ textAlign: "center", marginTop: "48px", padding: "32px 0", borderTop: "1px solid rgba(95, 138, 158, 0.15)" }}>
+          <p style={{ fontSize: "16px", fontWeight: 600, color: "#1C2B36", marginBottom: "16px" }}>
+            See Our Equipment in Action
+          </p>
+          <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+            {demoVideos.map((video) => (
+              <button
+                key={video.src}
+                onClick={() => setActiveVideo({ src: video.src, title: video.title })}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "14px 28px",
+                  background: "#1C2B36",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  letterSpacing: "0.5px",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 2px 10px rgba(28, 43, 54, 0.2)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#C05621";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(192, 86, 33, 0.3)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#1C2B36";
+                  e.currentTarget.style.boxShadow = "0 2px 10px rgba(28, 43, 54, 0.2)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+                {video.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeVideo && (
+          <VideoModal src={activeVideo.src} title={activeVideo.title} onClose={() => setActiveVideo(null)} />
+        )}
 
         {/* CTA */}
         <div style={{ textAlign: "center", marginTop: "60px" }}>

@@ -2,10 +2,10 @@ export default function StructuredData() {
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://www.ibefw.com/#business",
+    "@id": "https://www.industrialbakeryequipment.com/#business",
     name: "Industrial Bakery Equipment",
     alternateName: "IBE",
-    url: "https://www.ibefw.com",
+    url: "https://www.industrialbakeryequipment.com",
     telephone: "260-710-0063",
     email: ["sales@industrialbakeryequipment.com", "ibepurchasing@yahoo.com"],
     description:
@@ -106,7 +106,7 @@ export default function StructuredData() {
     "@type": "WebSite",
     name: "Industrial Bakery Equipment",
     alternateName: "IBE",
-    url: "https://www.ibefw.com",
+    url: "https://www.industrialbakeryequipment.com",
   };
 
   return (

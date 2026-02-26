@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useData } from "@/context/DataContext";
@@ -189,6 +190,34 @@ export default function Events() {
               </a>
             </div>
           )}
+
+          {/* Booth Photos */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", marginBottom: "40px" }}>
+            {[
+              { src: "/images/eventbooth1.jpg", alt: "IBE trade show booth display" },
+              { src: "/images/eventbooth2.jpg", alt: "IBE event booth showcase" },
+            ].map((photo) => (
+              <div
+                key={photo.src}
+                className="event-card"
+                style={{
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(95, 138, 158, 0.15)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                }}
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={600}
+                  height={400}
+                  style={{ width: "100%", height: "auto", display: "block", objectFit: "cover" }}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            ))}
+          </div>
 
           {/* Info cards */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "24px" }}>
