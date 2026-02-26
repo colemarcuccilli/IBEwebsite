@@ -97,7 +97,7 @@ export default function Navbar() {
               style={{ objectFit: "contain" }}
               priority
             />
-            <span style={{ fontSize: "18px", fontWeight: 700, fontStyle: "italic", color: "#C05621", letterSpacing: "1.5px", whiteSpace: "nowrap" }}>
+            <span className="chrome-italic" style={{ fontSize: "18px", letterSpacing: "1.5px", whiteSpace: "nowrap" }}>
               Industrial Bakery Equipment
             </span>
           </a>

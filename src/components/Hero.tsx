@@ -87,13 +87,10 @@ export default function Hero() {
             />
           </div>
           <h1
-            className="hero-subtitle"
+            className="hero-subtitle chrome-italic-light"
             style={{
               fontSize: "clamp(24px, 4vw, 42px)",
-              color: "#ffffff",
               marginBottom: "32px",
-              fontWeight: 700,
-              fontStyle: "italic",
               letterSpacing: "3px",
             }}
           >
