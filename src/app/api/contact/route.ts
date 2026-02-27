@@ -165,10 +165,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Send email notification via Resend
+  console.log("RESEND_API_KEY present:", !!process.env.RESEND_API_KEY);
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
+      const emailResult = await resend.emails.send({
         from: "IBE Website <noreply@send.industrialbakeryequipment.com>",
         to: ["ibepurchasing@yahoo.com", "sales@industrialbakeryequipment.com"],
         replyTo: formData.email || undefined,
@@ -183,6 +184,7 @@ export async function POST(request: NextRequest) {
           products: formData.products || "",
         }),
       });
+      console.log("Resend result:", JSON.stringify(emailResult));
     } catch (err) {
       console.error("Failed to send email via Resend:", err);
     }
