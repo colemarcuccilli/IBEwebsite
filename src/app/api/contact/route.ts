@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const emailResult = await resend.emails.send({
-        from: "IBE Website <noreply@send.industrialbakeryequipment.com>",
+        from: "IBE Website <noreply@industrialbakeryequipment.com>",
         to: ["ibepurchasing@yahoo.com", "sales@industrialbakeryequipment.com"],
         replyTo: formData.email || undefined,
         subject: `New Inquiry from ${formData.name || "Website Visitor"}${formData.company ? ` — ${formData.company}` : ""}`,
